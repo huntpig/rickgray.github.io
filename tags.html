@@ -1,0 +1,13 @@
+---
+layout: page
+permalink: "tags/index.html"
+---
+
+<ul class="tags">
+    <h4>
+        <a class="text-muted">Tag cloud:</a>
+        {% for tag in site.tags %}
+        <a href="#{{ tag | first | slugize }}">{{ tag | first }}</a>
+        {% endfor %}
+    </h4>
+</ul>

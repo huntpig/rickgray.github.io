@@ -1,0 +1,14 @@
+# Site Info
+baseurl: "/blog"
+url: "http://rickgray.me"
+
+# Disqus settings
+disqus:
+    shortname: "rickgrayblog"
+
+# Author Info
+author:
+    name: "Chensy"
+    email: "rickchen.vip@gmail.com"
+    weibo: "http://weibo.com/rickgray"
+    github: "https://github.com/RickGray"
