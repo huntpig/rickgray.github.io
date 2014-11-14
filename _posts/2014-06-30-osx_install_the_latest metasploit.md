@@ -1,6 +1,6 @@
 ---
 layout: post
-title: “OSX Install The Latest Metasploit”
+title: OSX Install The Latest Metasploit
 tags: [mac,msf]
 ---
 
