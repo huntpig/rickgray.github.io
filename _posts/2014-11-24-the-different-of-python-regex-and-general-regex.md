@@ -26,12 +26,10 @@ python中使用自定义命名进行后向引用时也有别于常规的 ``\k<na
 > 描述：匹配连续两次出现的单词
 
 {% highlight python %}
-
 >>> import re
 >>> re.findall(r"\b(?P<word>\w+)\b\s+(?P=word)\b", "word word go go fal fal")
 ['word', 'go', 'fal']
 >>>
-
 {% endhighlight %}
 
 
@@ -50,23 +48,19 @@ python写正则表达式的时候，要特别注意转义字符与原始字符�
 > 描述：匹配以动名词形式结尾的单词的ing前面部分
 
 {% highlight python %}
-
 >>> import re
 >>> re.findall("\b\w+(?=ing\b)", "I'm singing while you're dancing")
 []
 >>>
-
 {% endhighlight %}
 
 注意在上面的 ``re.findall()`` 中，正则表达式中存在 ``\b`` 字符，在python中具有退格的转义含义，但是 ``\b`` 在正则表达式中意为匹配单词的开始或结束，因此为了防止字符串被转移需要带上 ``r`` 标志，使用原始字符串形式：
 
 {% highlight python %}
-
 >>> import re
 >>> re.findall(r"\b\w+(?=ing\b)", "I'm singing while you're dancing")
 ['sing', 'danc']
 >>>
-
 {% endhighlight %}
 
 #### 2.2 贪婪与懒惰
@@ -80,12 +74,10 @@ python写正则表达式的时候，要特别注意转义字符与原始字符�
 > 描述：匹配以a开始，以b结束的最长字符串
 
 {% highlight python %}
-
 >>> import re
 >>> re.findall(r"a.*b", "aabab")
 ['aabab']
 >>>
-
 {% endhighlight %}
 
 上述情况被称为 ``贪婪`` 匹配。
@@ -99,12 +91,10 @@ python写正则表达式的时候，要特别注意转义字符与原始字符�
 > 描述：匹配以a开始，以b结束的最长字符串
 
 {% highlight python %}
-
 >>> import re
 >>> re.findall(r"a.*?b", "aabab")
 ['aab', 'ab']
 >>>
-
 {% endhighlight %}
 
 通过上面的例子应该能很好的理解贪婪与懒惰（非贪婪）这两种匹配模式的差异了。

@@ -18,14 +18,12 @@ Windows程序是基于事件驱动机制的，一个事件消息产生，首先�
 ``SetWindowsHookEx()``：安装钩子
 
 {% highlight c %}
-
 HHOOK SetWindowsHookEx(  
     int idHook,  
     HOOKPROC lpfn,  
     HINSTANCE hMod,  
     DWORD dwThreadId  
-}; 
-    
+};
 {% endhighlight %}
     
 * idHook：钩子的类型，即它处理的消息类型
@@ -38,14 +36,12 @@ HHOOK SetWindowsHookEx(
 ``CallNextHookEx()``：将消息传给下一个钩子处理程序
 
 {% highlight c %}
-
 LRESULT CallNextHookEx(  
     HHOOK hhk,  
     int nCode,  
     WPARAM wParam,  
     LPARAM lParam  
 };
-    
 {% endhighlight %}
     
 * hhk：当前钩子的句柄
@@ -56,11 +52,9 @@ LRESULT CallNextHookEx(
 ``UnhookWindowshookEx()``：卸载钩子
 
 {% highlight c %}
-
 LRESULT UnhookWindowsHookEx(  
     HHOOK hhk  
 };
-    
 {% endhighlight %}
 
 * hhk：需要卸载的钩子的句柄
@@ -70,7 +64,6 @@ LRESULT UnhookWindowsHookEx(
 首先是Dll文件：KeyHook.cpp
 
 {% highlight c %}
-
 #include <stdio.h>  
 #include <windows.h>  
 #include <tchar.h>  
@@ -129,7 +122,6 @@ __declspec(dllexport) void HookStop() {
 #ifdef __cplusplus  
 }  
 #endif
-    
 {% endhighlight %}
     
 使用g++将其编译为dll文件（KeyHook.dll）：``g++ --share -o KeyHook.dll KeyHook.cpp``
@@ -138,7 +130,6 @@ __declspec(dllexport) void HookStop() {
 下面是主程序：HookMain.cpp
 
 {% highlight c %}
-
 #include <stdio.h>  
 #include <conio.h>  
 #include <Windows.h>  
@@ -171,7 +162,6 @@ int main() {
   
     return 0;  
 }
-    
 {% endhighlight %}
     
 编译该cpp为可执行文件（HookMain.exe）：``g++ -o KeyMain.exe KeyMain.cpp``

