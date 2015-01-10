@@ -1,6 +1,7 @@
 # Site Info
 baseurl: ""
 url: "http://rickgray.me"
+banner: "{{ RickGray }}"
 
 # Disqus settings
 disqus:

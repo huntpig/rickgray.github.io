@@ -1,0 +1,16 @@
+    <div class="header">
+        <div class="title">
+            <span>{{ site.banner }}</span>
+        </div>
+        <div class="links">
+            {% if site.author.github %}
+            <a href="{{site.author.github}}"><i class="fa fa-github fa-2x"></i></a>
+            {% endif %}
+            {% if site.author.weibo %}
+            <a href="{{site.author.weibo}}"><i class="fa fa-weibo fa-2x"></i></a>
+            {% endif %}
+            {% if site.author.github %}
+            <a href="{{ "/rss.xml" | prepend:site.baseurl }}"><i class="fa fa-rss fa-2x"></i></a>
+            {% endif %}
+        </div>
+    </div>

@@ -1,7 +1,11 @@
 ---
-layout: welcome
+layout: base
+permalink: "index.html"
 ---
-<div class="text-center">        
-	<img class="circular" src="{{ "/public/img/front.jpg" | prepend:site.baseurl }}">
-	<p>contact me <a href="mailto:rickchen.vip@gmail.com">rickchen.vip (at) gmail.com</a></p>
-</div>
+        <div class="archive-list">
+            <ul>
+                {% for post in site.posts %}
+                <li><a href="{{ post.url | prepend:site.baseurl}}">{{ post.title }}</a><span>{{ post.date | date_to_string }}</span></li>
+                {% endfor %}
+            </ul>
+        </div>
