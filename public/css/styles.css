@@ -59,6 +59,13 @@ pre code {
     background-color: #efefef;
 }
 
+blockquote {
+    background: none repeat scroll 0% 0% #EFEFEF;
+    border-left: 10px solid #AA0010;
+    padding-left: 10px;
+    margin: 1.5em 0px;
+}
+
 .container {
     width: 840px;
     margin: auto;
@@ -203,7 +210,6 @@ pre code {
 
 .article .article-content ul{  
     list-style:disc inside none; 
-    margin-left: 4em; 
 }
 .article .article-content ul ul{  
     list-style: circle inside none; 
@@ -215,7 +221,7 @@ pre code {
 }
 .article .article-content ol{
     list-style:demical inside none;  
-    margin-left: 4em;  
+    margin-left: 2em;  
 }
 .article .article-content ol ul{  
     list-style: circle inside none; 
