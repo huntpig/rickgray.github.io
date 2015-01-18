@@ -180,7 +180,7 @@ blockquote {
 }
 
 .article .article-content a:visited {
-    color: black;
+    color: blue;
     text-decoration: none;
 }
 
@@ -194,7 +194,7 @@ blockquote {
 }
 
 .article .article-content h2 {
-    font-size: 26px
+    font-size: 26px;
     line-height: 2.0;
 }
 
@@ -230,7 +230,7 @@ blockquote {
     margin-left: 3em; 
 }
 .article .article-content ol{
-    list-style:demical inside none;  
+    list-style: decimal inside none;  
     margin-left: 2em;  
 }
 .article .article-content ol ul{  
