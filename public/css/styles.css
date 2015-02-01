@@ -175,13 +175,24 @@ blockquote {
 }
 
 .article .article-content a:link {
-    color: blue;
+    color: rgb(110, 110, 110);
+    font-style: oblique;
     text-decoration: none;
+    text-decoration: underline;
 }
 
 .article .article-content a:visited {
-    color: blue;
+    color: rgb(110, 110, 110);
+    font-style: oblique;
     text-decoration: none;
+    text-decoration: underline;
+}
+
+.article .article-content a:hover {
+    color: red;
+    font-style: oblique;
+    text-decoration: none;
+    text-decoration: underline; 
 }
 
 .article .article-content p {
