@@ -1,16 +1,25 @@
-    <div class="header">
-        <div class="title">
-            <span>{{ site.banner }}</span>
-        </div>
-        <div class="links">
-            {% if site.author.github %}
-            <a href="{{site.author.github}}"><i class="fa fa-github fa-2x"></i></a>
-            {% endif %}
-            {% if site.author.weibo %}
-            <a href="{{site.author.weibo}}"><i class="fa fa-weibo fa-2x"></i></a>
-            {% endif %}
-            {% if site.author.github %}
-            <a href="{{ "/rss.xml" | prepend:site.baseurl }}"><i class="fa fa-rss fa-2x"></i></a>
-            {% endif %}
-        </div>
-    </div>
+<div class="profilepic">
+	<img src="/public/img/head.jpeg" alt="Profile Picture" style="width: 160px;" />
+</div>
+<hgroup>
+  <h1><a href="/">{{ site.title }}</a></h1>
+  {% if site.subtitle %}
+    <h2>{{ site.subtitle }}</h2>
+  {% endif %}
+</hgroup>
+<nav id="main-nav">{% include navigation.html %}</nav>
+<!--
+<nav id="sub-nav">
+	<div class="social">
+		{% if site.author.email %}
+			<a class="email" href="mailto:{{ site.autho.github }}" title="Email">Email</a>
+		{% endif %}
+		{% if site.author.github %}
+			<a class="github" href="https://github.com/{{ site.author.github }}" title="GitHub">GitHub</a>
+		{% endif %}
+		{% if site.author.weibo %}
+			<a class="rss" href="{{ site.author.weibo }}" title="RSS">RSS</a>
+		{% endif %}
+	</div>
+</nav>
+-->

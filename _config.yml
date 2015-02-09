@@ -3,9 +3,15 @@ baseurl: ""
 url: "http://rickgray.me"
 banner: "{{ RickGray }}"
 
+
+lang: "zh"
+title: "Quiet And Powerful"
+subtitle: "...and you?"
+
 # Disqus settings
 disqus:
     shortname: "rickgrayblog"
+    show: True
 
 # Author Info
 author:
