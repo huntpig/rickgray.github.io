@@ -16,12 +16,13 @@ body {
     font-family: Georgia,Cambria,"Times New Roman",Times,serif;
     font-weight: 300;
     font-size: 13px;
+    word-break: break-all;
     background: #2d3339;
 }
 @media screen and (max-width: 1040px) { 
     body { margin: 0 20px }
 }
-@media screen and (max-width: 600px) { 
+@media screen and (max-width: 800px) { 
     body { font-size: 13px }
 }
 h1 { font-size: 1.8em }
@@ -103,7 +104,7 @@ a {
     max-width: 210px;
     margin: 0;
 }
-@media screen and (max-width: 600px) { 
+@media screen and (max-width: 800px) { 
     #header h1 a { margin: auto }
 }
 #header h2 {
@@ -123,7 +124,7 @@ a {
         margin-top: 15px;
     }
 }
-@media screen and (max-width: 600px) { 
+@media screen and (max-width: 800px) { 
     #main-nav>ul { display: none }
 }
 #main-nav>ul>li {
@@ -167,7 +168,7 @@ a {
         right: 0;
     }
 }
-@media screen and (max-width: 600px) { 
+@media screen and (max-width: 800px) { 
     #sub-nav { display: none }
 }
 #sub-nav .social {
@@ -267,7 +268,7 @@ article {
 @media screen and (max-width: 800px) { 
     article { padding-bottom: 15px }
 }
-@media screen and (max-width: 600px) { 
+@media screen and (max-width: 800px) { 
     article { padding: 15px 0 }
 }
 article h1.title {
@@ -280,7 +281,21 @@ article .entry-content {
     line-height: 2;
     text-align: justify;
 }
-article .entry-content a:hover { text-decoration: underline }
+article .entry-content a:visited {
+	color: black;
+	text-decoration: none;
+}
+article .entry-content a:active {
+	color: red;
+}
+article .entry-content a:link {
+	color: black;
+	text-decoration: none;
+}
+article .entry-content a:hover { 
+	color: red;
+	text-decoration: underline;
+}
 article .entry-content .more-link {
     display: block;
     margin-top: 16px;
@@ -460,14 +475,14 @@ article .entry-content .video-container embed {
 .meta .comments:before { content: "\f075" }
 .meta .edit:before { content: "\f044" }
 #content article .entry-content .archives { font-family: "Open Sans" }
-#content article .entry-content .archives .year { font-size: 1.2em }
+#content article .entry-content .archives .year { font-size: 1.8em }
 #content article .entry-content .archives h3.title {
     display: inline-block;
-    font-size: 1.2em;
+    font-size: 1.5em;
     font-weight: 400;
 }
 #content article .entry-content .archives ul {
-    padding: 20px;
+    padding: 20px 0px;
     margin-left: 30px;
 }
 #content article .entry-content .archives ul li div.meta {
@@ -551,7 +566,7 @@ ul li a { -webkit-transition: all .2s ease-in;-moz-transition:all .2s ease-in;-o
 @media screen and (max-width: 1040px) { 
     body { margin: 0 0 }
 }
-@media screen and (max-width: 700px) { 
+@media screen and (max-width: 800px) { 
     .container .credit-box { display: none }
     .left-col {
         position: relative;
@@ -580,7 +595,7 @@ ul li a { -webkit-transition: all .2s ease-in;-moz-transition:all .2s ease-in;-o
     #content article .meta span.edit { display: none }
     #content article .meta span.comments { display: none }
     #content article h1.title { overflow: hidden; }
-    #content article pre code { word-wrap: break-word;}
+    #content article pre code { word-wrap: normal; }
     #content article .entry-content { font-size:1.3em; }
 }
 #feedburner-count { position: absolute;top:0;right:0;clip:rect(4px, 85px, 15px, 4px) }
