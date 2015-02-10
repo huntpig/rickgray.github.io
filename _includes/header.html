@@ -11,15 +11,13 @@
 <!--
 <nav id="sub-nav">
 	<div class="social">
-		{% if site.author.email %}
-			<a class="email" href="mailto:{{ site.autho.github }}" title="Email">Email</a>
-		{% endif %}
 		{% if site.author.github %}
-			<a class="github" href="https://github.com/{{ site.author.github }}" title="GitHub">GitHub</a>
+			<i class="fa fa-github"><a href="{{ site.author.github }}"></a></i>
 		{% endif %}
 		{% if site.author.weibo %}
-			<a class="rss" href="{{ site.author.weibo }}" title="RSS">RSS</a>
+			<i class="fa fa-weibo"><a href="{{ site.author.weibo }}"></a></i>
 		{% endif %}
+		<i class="fa fa-rss"><a href="/rss.xml"></a></i>
 	</div>
 </nav>
 -->
