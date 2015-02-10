@@ -318,6 +318,7 @@ article .entry-content em { font-style: italic }
 article .entry-content p { margin-top: 10px }
 article .entry-content p code {
 	color: #FE0F0F;
+	word-break: break-all;
 	margin-left: 3px;
 	margin-right: 3px;
 	padding: 4px;
@@ -579,7 +580,7 @@ ul li a { -webkit-transition: all .2s ease-in;-moz-transition:all .2s ease-in;-o
     #content article .meta span.edit { display: none }
     #content article .meta span.comments { display: none }
     #content article h1.title { overflow: hidden; }
-    #content article pre code { word-break: break-all;}
+    #content article pre code { word-wrap: break-word;}
     #content article .entry-content { font-size:1.3em; }
 }
 #feedburner-count { position: absolute;top:0;right:0;clip:rect(4px, 85px, 15px, 4px) }
