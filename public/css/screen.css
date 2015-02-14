@@ -279,6 +279,7 @@ article h1.title a { color: #666 }
 article .entry-content {
     line-height: 2;
     text-align: justify;
+    word-break: break-all;
 }
 article .entry-content a:visited {
 	color: black;
@@ -332,11 +333,10 @@ article .entry-content em { font-style: italic }
 article .entry-content p { margin-top: 10px }
 article .entry-content p code {
 	color: #FE0F0F;
-	word-break: break-all;
-	margin-left: 3px;
-	margin-right: 3px;
-	padding: 4px;
-	border-radius: 2px;
+	margin-left: 4px;
+	margin-right: 4px;
+	padding: 2px;
+	border-radius: 6px;
 	background-color: #EFEFEF;
 }
 article .entry-content h2 {
