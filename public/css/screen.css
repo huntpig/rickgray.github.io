@@ -279,22 +279,6 @@ article h1.title a { color: #666 }
 article .entry-content {
     line-height: 2;
     text-align: justify;
-    word-break: break-all;
-}
-article .entry-content a:visited {
-	color: black;
-	text-decoration: none;
-}
-article .entry-content a:active {
-	color: red;
-}
-article .entry-content a:link {
-	color: black;
-	text-decoration: none;
-}
-article .entry-content a:hover { 
-	color: red;
-	text-decoration: underline;
 }
 article .entry-content .more-link {
     display: block;
@@ -425,7 +409,28 @@ article .entry-content .video-container embed {
     border-bottom: 1px solid #ddd;
 }
 .post h1.title,
-.post .entry-content { margin-bottom: 0 }
+.post .entry-content { 
+    margin-bottom: 0;
+    word-break: break-all;
+}
+.post .entry-content a:link {
+    color: rgb(110, 110, 110);
+    font-style: oblique;
+    text-decoration: none;
+    text-decoration: underline;
+}
+.post .entry-content a:visited {
+    color: rgb(110, 110, 110);
+    font-style: oblique;
+    text-decoration: none;
+    text-decoration: underline;
+}
+.post .entry-content a:hover {
+    color: red;
+    font-style: oblique;
+    text-decoration: none;
+    text-decoration: underline; 
+}
 @media screen and (max-width: 800px) { 
     .post h1.title,
     .post .entry-content { margin-left: 0 }
@@ -474,6 +479,21 @@ article .entry-content .video-container embed {
 .meta .comments:before { content: "\f075" }
 .meta .edit:before { content: "\f044" }
 #content article .entry-content .archives { font-family: "Open Sans" }
+#content article .entry-content .archives a:visited {
+    color: black;
+    text-decoration: none;
+}
+#content article .entry-content .archives a:active {
+    color: red;
+}
+#content article .entry-content .archives a:link {
+    color: black;
+    text-decoration: none;
+}
+#content article .entry-content .archives a:hover { 
+    color: red;
+    text-decoration: underline;
+}
 #content article .entry-content .archives .year { font-size: 1.8em }
 #content article .entry-content .archives h3.title {
     display: inline-block;
@@ -529,7 +549,7 @@ ul li a { -webkit-transition: all .2s ease-in;-moz-transition:all .2s ease-in;-o
 .container .mid-col #banner { width: 100% }
 .container .mid-col #banner small { margin-right: 70px }
 .container .mid-col footer.inner { text-align: center;margin:0px 70px 0px 40px;width:auto }
-.container .mid-col .mid-col-container { padding: 0px 70px 0px 100px;max-width:800px }
+.container .mid-col .mid-col-container { padding: 0px 70px 0px 80px;max-width:900px }
 #content { width: 100% }
 #content article { border-top: none;padding:80px 0px }
 #content article .title { margin-left: 0px;font-size:4em;font-weight:800;line-height:1em }
