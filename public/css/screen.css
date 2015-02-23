@@ -497,7 +497,7 @@ article .entry-content .video-container embed {
 #content article .entry-content .archives .year { font-size: 1.8em }
 #content article .entry-content .archives h3.title {
     display: inline-block;
-    font-size: 1.5em;
+    font-size: 1.3em;
     font-weight: 400;
 }
 #content article .entry-content .archives ul {
@@ -509,7 +509,7 @@ article .entry-content .video-container embed {
     font-size: 0.6em;
     font-weight: 300;
 }
-#content article .entry-content .archives ul li div.meta span.date,
+#content article .entry-content .archives ul li div.meta span.date { display: inline }
 #content article .entry-content .archives ul li div.meta span.edit { display: none }
 #comment {
     padding: 30px 0;
@@ -597,6 +597,7 @@ ul li a { -webkit-transition: all .2s ease-in;-moz-transition:all .2s ease-in;-o
         text-align: center;
     }
     .left-col #header #sub-nav { display: block }
+    .left-col #header #main-nav .aboutme { display: none }
     .left-col #header #main-nav ul { display: block }
     .left-col #header #main-nav ul li {
         display: inline;
