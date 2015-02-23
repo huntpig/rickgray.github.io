@@ -63,6 +63,7 @@ ROP链由一个个ROP小配件组成，ROP小配件由 ”汇编指令＋retn指
 
 
 **2、开启DEP保护，溢出失败**
+
 ![img]({{ site.url }}/public/img/article/2014-08-26-bypass-dep-with-rop-study/116-e1408992646908.png)
 
 设置好后，重启电脑，再次运行shellcode.exe，可以看到出错了

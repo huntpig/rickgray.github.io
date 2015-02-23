@@ -2,6 +2,7 @@
 baseurl: ""
 url: "http://rickgray.me"
 banner: "{{ RickGray }}"
+description : "Quiet And Powerful...and you?"
 
 
 lang: "zh"
@@ -19,3 +20,14 @@ author:
     email: "rickchen.vip@gmail.com"
     weibo: "http://weibo.com/rickgray"
     github: "https://github.com/RickGray"
+
+friends:
+    - name: "Purpleroc"
+      url: "http://purpleroc.com"
+      desc: "帅气学长"
+    - name: "RicterZ"
+      url: "http://ricter.me"
+      desc: "萌学弟，最爱萝莉胖次"
+    - name: "Caiji"
+      url: "http://c-chicken.cc"
+      desc: "小学弟弟，超级无数 (๑•̀ㅂ•́)و✧"
