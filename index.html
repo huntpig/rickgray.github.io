@@ -4,21 +4,9 @@ title: Home
 permalink: "index.html"
 ---
 
-<article class="page">
-    <div class="entry-content">
-	<div class="archives">
-	{% for post in site.posts reverse %}
-	{% if post.layout == 'post' %}
-		{% include archive_post.html %}
-	{% endif %}
-	{% endfor %}
-	  </ul>
-	</div>
-    </div>
-</article>
-{% if site.disqus_short_name and page.comments == true %}
-<section id="comment">
-    <h1 class="title">Comments</h1>
-    <div id="disqus_thread" aria-live="polite">{% include post/disqus_thread.html %}</div>
-</section>
-{% endif %}
+{% for post in site.posts reverse limit:2 %}
+{% assign i = 1 %}
+{% assign content = post.content %}
+{% assign page = post %}
+<article class="post">{% include iarticle.html %}</article>
+{% endfor %}
