@@ -84,7 +84,7 @@ a {
     -o-transition: color 0.3s;
     transition: color 0.3s;
 }
-#header a:hover { color: #258fb8 }
+#header a:hover { color: #d9040b }
 #header h1 {
     font-family: "Open Sans";
     font-weight: 400;
