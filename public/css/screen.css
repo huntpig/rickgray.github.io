@@ -30,7 +30,7 @@ h3 { font-size: 1.3em }
 a {
     text-decoration: none;
     outline-width: 0;
-    color: #4466c5;
+    color: #000;
 }
 .alignleft { float: left }
 .alignright { float: right }
@@ -142,7 +142,7 @@ a {
     }
     #main-nav>ul>li:last-of-type { margin-right: 0 }
 }
-#main-nav>ul>li:hover>a { color: #258fb8 }
+#main-nav>ul>li:hover>a { color: #d9040b }
 #main-nav>ul>li>a {
     padding: 38px 0;
     margin-top: -38px;
@@ -626,9 +626,9 @@ article table.matrix td { background-color: #fff }
 article table.matrix th { background-color: #ffd }
 ul.categories { font-family: "Open Sans" }
 ul.categories span.size { font-size: 0.7em }
-a:hover { -webkit-transition: color 0.3s;-moz-transition:color 0.3s;-o-transition:color 0.3s;transition:color 0.3s;color:#4466c5 }
+a:hover { -webkit-transition: color 0.3s;-moz-transition:color 0.3s;-o-transition:color 0.3s;transition:color 0.3s;color:#d9040b }
 #content article h1.title a:hover,
-.left-col a:hover { color: #4466c5 }
+.left-col a:hover { color: #d9040b }
 #page-navigation {
     font-family: arial;
     font-size: 1.3em;
