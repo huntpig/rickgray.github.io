@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "使用vitualenv建立Python虚拟环境"
+title: "使用virtualenv建立Python虚拟环境"
 tags: [python]
 ---
 
