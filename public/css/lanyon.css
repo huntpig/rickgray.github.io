@@ -114,11 +114,14 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 0;
 }
 
-@media (max-width: 48em) {
+@media (max-width: 64em) {
   .masthead-title {
     text-align: center;
   }
   .masthead-title small {
+    display: center;
+  }
+  .masthead-meta {
     display: none;
   }
 }
