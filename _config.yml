@@ -1,26 +1,18 @@
-# Site Info
-baseurl: ""
-url: "http://rickgray.me"
-banner: "{{ RickGray }}"
-description : "Quiet And Powerful...and you?"
+# Permalinks
+#
+# Use of `relative_permalinks` ensures post links from the index work properly.
+# permalink:           pretty
+# relative_permalinks: true
 
+# Setup
+title:               "RickGray"
+tagline:             "Quiet And Powerful"
+description:         "Something Specail"
+url:                 "http://rickgray.me"
+baseurl:             ""
+paginate:            2
 
-lang: "zh"
-title: "Quiet And Powerful"
-subtitle: "...and you?"
-
-# Disqus settings
-disqus:
-    shortname: "rickgrayblog"
-    show: True
-
-# Author Info
-author:
-    name: "Chensy"
-    email: "rickchen.vip@gmail.com"
-    weibo: "http://weibo.com/rickgray"
-    github: "https://github.com/RickGray"
-
+# Custom vars
 friends:
     - name: "Purpleroc"
       url: "http://purpleroc.com"
@@ -40,3 +32,14 @@ friends:
     - name: "ZeroLing"
       url: "http://zeroling.com"
       desc: "网校Ling神，前端牛"
+
+author:
+    name: "RickGray"
+    url: "http://weibo.com/rickgray"
+    email: "rickchen.vip@gmail.com"
+    weibo: "http://weibo.com/rickgray"
+    github: "https://github.com/RickGray"
+
+disqus:
+    shortname: "rickgrayblog"
+    show: False

@@ -1,29 +1,43 @@
 ---
 layout: default
-single: true
 ---
 
-<article class="post">{% include article.html %}</article>
+<div class="post">
+  <h1 class="post-title">{{ page.title }}</h1>
+  <span class="post-date" style="float: left"><i class="fa fa-calendar" style="margin: 8px; "></i>{{ page.date | date_to_string }}</span>
+  <span class="post-tags"><i class="fa fa-tags" style="margin: 8px"></i>{{ page.tags | join:", " }}</span>
+  {% if site.disqus.show %}
+  <span class="post-comments"><i class="fa fa-comments" style="margin: 8px"></i></span>
+  {% endif %}
 
-<div id="page-navigation"> 
-        <div class="previous"> 
-        {% if page.previous.url %} 
-                <a href="{{page.previous.url}}" title="Previous Post: 
-{{page.previous.title}}">&laquo; {{page.previous.title}}</a>
-        {% endif %} 
-        </div>
+  <div class="post-content">
+  {{ content }}
+  </div>
+</div>
 
-        <div class="next"> 
-        {% if page.next.url %} 
-               <a href="{{page.next.url}}" title="next Post: 
-{{page.next.title}}">{{page.next.title}} &raquo; </a> 
-        {% endif %} 
-        </div>
-</div> 
 
+{% if site.disqus.show %}
 {% if site.disqus.shortname %}
 <section id="comment">
     <h1 class="title">Comments</h1>
     <div id="disqus_thread" aria-live="polite">{% include disqus.html %}</div>
 </section>
 {% endif %}
+{% endif %}
+
+
+<div class="related">
+  <h2>Recent Posts</h2>
+  <ul class="related-posts">
+    {% for post in site.related_posts limit:3 %}
+      <li>
+        <h3>
+          <a href="{{ site.baseurl }}{{ post.url }}">
+            {{ post.title }}
+            <small>{{ post.date | date_to_string }}</small>
+          </a>
+        </h3>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
