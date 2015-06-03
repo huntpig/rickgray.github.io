@@ -15,17 +15,15 @@ Windows程序是基于事件驱动机制的，一个事件消息产生，首先�
 
 首先简单的介绍几个Windows API：
 
-``SetWindowsHookEx()``：安装钩子
+SetWindowsHookEx()：安装钩子
 
-{% highlight c %}
-HHOOK SetWindowsHookEx(  
-    int idHook,  
-    HOOKPROC lpfn,  
-    HINSTANCE hMod,  
-    DWORD dwThreadId  
-};
-{% endhighlight %}
-    
+    HHOOK SetWindowsHookEx(  
+        int idHook,  
+        HOOKPROC lpfn,  
+        HINSTANCE hMod,  
+        DWORD dwThreadId  
+    };
+
 * idHook：钩子的类型，即它处理的消息类型
 * lpfn：钩子子程序的地址指针
 * hMod：钩子子程序所属的Dll句柄
@@ -33,29 +31,25 @@ HHOOK SetWindowsHookEx(
 
 函数成功则返回钩子子程序的句柄，失败返回NULL。
 
-``CallNextHookEx()``：将消息传给下一个钩子处理程序
+CallNextHookEx()：将消息传给下一个钩子处理程序
 
-{% highlight c %}
-LRESULT CallNextHookEx(  
-    HHOOK hhk,  
-    int nCode,  
-    WPARAM wParam,  
-    LPARAM lParam  
-};
-{% endhighlight %}
-    
+    LRESULT CallNextHookEx(  
+        HHOOK hhk,  
+        int nCode,  
+        WPARAM wParam,  
+        LPARAM lParam  
+    };
+
 * hhk：当前钩子的句柄
 * nCode：传给钩子子程序的事件代码
 * wParam：具体的消息值
 * lParam：附带的信息
 
-``UnhookWindowshookEx()``：卸载钩子
+UnhookWindowshookEx()：卸载钩子
 
-{% highlight c %}
-LRESULT UnhookWindowsHookEx(  
-    HHOOK hhk  
-};
-{% endhighlight %}
+    LRESULT UnhookWindowsHookEx(  
+        HHOOK hhk  
+    };
 
 * hhk：需要卸载的钩子的句柄
 
@@ -67,43 +61,43 @@ LRESULT UnhookWindowsHookEx(
 #include <stdio.h>  
 #include <windows.h>  
 #include <tchar.h>  
-  
+
 #define DEF_PROCESS_NAME "notepad.exe"  
-  
+
 HINSTANCE g_hInstance = NULL;  
 HHOOK g_hHook = NULL;  
 HWND g_hWnd = NULL;  
-  
+
 BOOL WINAPI DllMain(HINSTANCE hinstDll, DWORD dwReason, LPVOID lpvReserved) {  
     switch( dwReason ) {  
         case DLL_PROCESS_ATTACH:  
             g_hInstance = hinstDll;  
             break;  
-  
+
         case DLL_PROCESS_DETACH:  
             break;  
     }  
     return TRUE;  
 }  
-  
+
 LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {  
     char szPath[MAX_PATH] = {0, };  
     char *p = NULL;  
-  
+
     if( nCode == 0 ) {  
         if( !(lParam & 0x80000000) ) {  
             GetModuleFileNameA(NULL, szPath, MAX_PATH);  
             p = strrchr(szPath, '\\');  
-  
+
             if( !_stricmp(p + 1, DEF_PROCESS_NAME) ) {  
                 return 1;  
             }  
         }  
     }  
-  
+
     return CallNextHookEx(g_hHook, nCode, wParam, lParam);  
 }  
-  
+
 #ifdef __cplusplus  
 extern "C" {  
 #endif  
@@ -111,7 +105,7 @@ __declspec(dllexport) void HookStart() {
     g_hHook = SetWindowsHookEx(WH_KEYBOARD, KeyboardProc, g_hInstance, 0);  
     _tprintf("Hook Starting...\n");  
 }  
-  
+
 __declspec(dllexport) void HookStop() {  
     if( g_hHook ) {  
         UnhookWindowsHookEx(g_hHook);  
@@ -123,7 +117,7 @@ __declspec(dllexport) void HookStop() {
 }  
 #endif
 {% endhighlight %}
-    
+
 使用g++将其编译为dll文件（KeyHook.dll）：``g++ --share -o KeyHook.dll KeyHook.cpp``
 （注：DllMain在每次LoadLibrary或FreeLibrary该dll文件时自动运行）
 
@@ -133,37 +127,37 @@ __declspec(dllexport) void HookStop() {
 #include <stdio.h>  
 #include <conio.h>  
 #include <Windows.h>  
-  
+
 #define DEF_DLL_NAME "KeyHook.dll"  
 #define DEF_HOOKSTART "HookStart"  
 #define DEF_HOOKSTOP "HookStop"  
-  
+
 typedef void(*PEN_HOOKSTART)();  
 typedef void(*PEN_HOOKSTOP)();  
-  
+
 int main() {  
     HMODULE hDll = NULL;  
     PEN_HOOKSTART HookStart = NULL;  
     PEN_HOOKSTOP HookStop = NULL;  
-  
+
     hDll = LoadLibraryA(DEF_DLL_NAME);  
-  
+
     HookStart = (PEN_HOOKSTART)GetProcAddress(hDll, DEF_HOOKSTART);  
     HookStop = (PEN_HOOKSTOP)GetProcAddress(hDll, DEF_HOOKSTOP);  
-  
+
     HookStart();  
-  
+
     printf("Press 'q' to quit!\n");  
     while( _getch() != 'q' );  
-  
+
     HookStop();  
-  
+
     FreeLibrary(hDll);  
-  
+
     return 0;  
 }
 {% endhighlight %}
-    
+
 编译该cpp为可执行文件（HookMain.exe）：``g++ -o KeyMain.exe KeyMain.cpp``
 
 编译完成后，将KeyHook.dll和HookMain.exe放于同一目录下，首先运行notepad（记事本），然后运行HookMain.exe，通过终端输出可以看到钩子被成功安装

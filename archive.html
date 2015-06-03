@@ -10,17 +10,17 @@ title: Home
     {% capture date %}{{ post.date }}{% endcapture %}
     {% capture this_year %}{{ date | date: "%Y" }}{% endcapture %}
     {% unless year == this_year %}
-    	{% assign year = this_year %}
-    	{% unless forloop.first %}
-    		</ul>
-    	{% endunless %}
-    	<h2 class="year">{{ date | date: "%Y" }}</h2>
-    	<ul>
+        {% assign year = this_year %}
+        {% unless forloop.first %}
+            </ul>
+        {% endunless %}
+        <h2 class="year">{{ date | date: "%Y" }}</h2>
+        <ul>
     {% endunless %}
-    	<li>
-    		<h3 class="post-title"><a href="{{ post.url }}">{{post.title}}</a></h1>
-            <!--<div><span class="post-date"><i class="fa fa-calendar fa-1x" style="margin: 8px; "></i>{{ date | date: "%b %e" }}</span></div>-->
-    	</li>
+        <li>
+            <h3 class="post-title"><a href="{{ post.url }}">{{post.title}}</a></h1>
+            <!--<span class="post-date"><i class="fa fa-calendar fa-1x" style="margin: 8px; "></i>{{ date | date: "%b %e" }}</span>-->
+        </li>
 
     {% endif %}
     {% endfor %}

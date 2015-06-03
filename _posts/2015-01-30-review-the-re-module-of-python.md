@@ -110,7 +110,7 @@ print re.search(r'e', s)
 
 再来一段待匹配的文本，然后从中匹配出email地址：
 
-	-*&*!#rickchen.vip@gmail.com=====163.com======123123%!@414842588@qq.com,root@0xfa.club
+    -*&*!#rickchen.vip@gmail.com=====163.com======123123%!@414842588@qq.com,root@0xfa.club
 
 这里使用的正则表达式为：``([a-z0-9][a-z0-9_\.-]+[a-z0-9]@[\da-z\.-]+\.[a-z\.]{2,20}[a-z])``，因为``match()``和``search()``匹配到一个就会结束匹配，所以这里使用re模块中的``finditer()``来匹配所有满足正则表达式的文本，并将它们作为迭代器返回。
 
@@ -118,18 +118,18 @@ print re.search(r'e', s)
 import re
 s = '-*&*!#rickchen.vip@gmail.com=====163.com======123123%!@414842588@qq.com,root@0xfa.club'
 for m in re.finditer(r'([a-z0-9][a-z0-9_\.-]+[a-z0-9]@[\da-z\.-]+\.[a-z\.]{2,20}[a-z])', s):
-	print m.group()
+    print m.group()
 {% endhighlight %}
 
 代码输出结果为：
 
-	rickchen.vip@gmail.com
-	414842588@qq.com
-	root@0xfa.club
+    rickchen.vip@gmail.com
+    414842588@qq.com
+    root@0xfa.club
 
 下面使用自定义名字分组来分别获取：email地址、email用户名、email所属域名。在Python里面指定分组名称表达式为``(?P<name>...)``，所以表达式在原有的基础上做一点分组命名处理：
 
-	(?P<email>(?P<username>[a-z0-9][a-z0-9_\.-]+[a-z0-9])@(?P<domain>[\da-z\.-]+\.[a-z\.]{2,20}[a-z]))
+    (?P<email>(?P<username>[a-z0-9][a-z0-9_\.-]+[a-z0-9])@(?P<domain>[\da-z\.-]+\.[a-z\.]{2,20}[a-z]))
 
 更改代码；
 
@@ -137,14 +137,14 @@ for m in re.finditer(r'([a-z0-9][a-z0-9_\.-]+[a-z0-9]@[\da-z\.-]+\.[a-z\.]{2,20}
 import re
 s = '-*&*!#rickchen.vip@gmail.com=====163.com======123123%!@414842588@qq.com,root@0xfa.club'
 for m in re.finditer(r'(?P<email>(?P<username>[a-z0-9][a-z0-9_\.-]+[a-z0-9])@(?P<domain>[\da-z\.-]+\.[a-z\.]{2,20}[a-z]))', s):
-	print 'Email: "%s" (Username: "%s", Domain: "%s")' % (m.group('email'), m.group('username'), m.group('domain'))
+    print 'Email: "%s" (Username: "%s", Domain: "%s")' % (m.group('email'), m.group('username'), m.group('domain'))
 {% endhighlight %}
 
 代码输出结果为：
 
-	Email: "rickchen.vip@gmail.com" (Username: "rickchen.vip", Domain: "gmail.com")
-	Email: "414842588@qq.com" (Username: "414842588", Domain: "qq.com")
-	Email: "root@0xfa.club" (Username: "root", Domain: "0xfa.club")
+    Email: "rickchen.vip@gmail.com" (Username: "rickchen.vip", Domain: "gmail.com")
+    Email: "414842588@qq.com" (Username: "414842588", Domain: "qq.com")
+    Email: "root@0xfa.club" (Username: "root", Domain: "0xfa.club")
 
 这里也可以不使用m.group('email')来获取``email``分组的值，可以使用``groupdict()``返回一个以别名为键值的字典（没有设置别名的不包含在内）。e.g.``m.groupdict()['email']``为匹配到的``email``分组的值。
 
@@ -152,7 +152,7 @@ for m in re.finditer(r'(?P<email>(?P<username>[a-z0-9][a-z0-9_\.-]+[a-z0-9])@(?P
 
 这里有一段html文本，为了演示方便将其融为一行：
 
-	<div><h1>Hello World!</h1><a href="http://rickgray.me">rickgray.me</a><div><p>This is testing!</p></div></div>
+    <div><h1>Hello World!</h1><a href="http://rickgray.me">rickgray.me</a><div><p>This is testing!</p></div></div>
 
 闭合标签指的是，<TAG>...</TAG>成对出现的标签，像``<div>...</div>``、``<h1>...</h1>``、``<a>...</a>``这些都属于闭合类型的标签，因为闭合标签成对出现所以一个简单的正则表达式可以这样写：``<(?P<tag>[^>]+)>(?P<value>.*)</(?P=tag)>``，看下面这段代码：
 
@@ -161,28 +161,28 @@ import re
 s = '<div><h1>Hello World!</h1><a href="http://rickgray.me">rickgray.me</a><div><p>This is testing!</p></div></div>'
 m = re.search(r'<(?P<tag>[^>]+)>(?P<value>.*)</(?P=tag)>', s)
 if m:
-	print 'Tag: "%s"' % m.group('tag')
-	print 'Value: "%s"' % m.group('value')
+    print 'Tag: "%s"' % m.group('tag')
+    print 'Value: "%s"' % m.group('value')
 {% endhighlight %}
 
 代码输出结果为：
 
-	Tag: "div"
-	Value: "<h1>Hello World!</h1><a href="http://rickgray.me">rickgray.me</a><div><p>This is testing!</p></div>"
+    Tag: "div"
+    Value: "<h1>Hello World!</h1><a href="http://rickgray.me">rickgray.me</a><div><p>This is testing!</p></div>"
 
 这里可以更完善一点的使用``<(?P<tag>[^>]+)\b[^>]*>(?P<value>.*)</(?P=tag)>``来匹配像``<a href="http://rickgray.me">rickgray.me</a>``这种含有属性的标签。在匹配标签值是使用的是贪婪模式``.*``而不是非贪婪模式``.*?``，如果这里使用非贪婪模式则输出结果则应该为（以第一个</div>作为结束标志，并不是正确的）：
 
-	Tag: "div"
-	Value: "<h1>Hello World!</h1><a href="http://rickgray.me">rickgray.me</a><div><p>This is testing!</p>"
+    Tag: "div"
+    Value: "<h1>Hello World!</h1><a href="http://rickgray.me">rickgray.me</a><div><p>This is testing!</p>"
 
 这里可以写个递归匹配闭合标签的函数``get_tags()``，如下：
 
 {% highlight python %}
 def get_tags(s, d=0):
-	tag_regex = r'<(?P<tag>[^>]+)\b[^>]*>(?P<value>.*)</(?P=tag)>'
-	for m in re.finditer(tag_regex, s, re.DOTALL):
-		print ' '*d,'%s ==> %s' % (m.group('tag'), m.group('value'))
-		get_tags(m.group('value'), d+4)
+    tag_regex = r'<(?P<tag>[^>]+)\b[^>]*>(?P<value>.*)</(?P=tag)>'
+    for m in re.finditer(tag_regex, s, re.DOTALL):
+        print ' '*d,'%s ==> %s' % (m.group('tag'), m.group('value'))
+        get_tags(m.group('value'), d+4)
 {% endhighlight %}
 
 这里重新找段测试html文本，将其保存为``demo.txt``：
@@ -227,10 +227,10 @@ def get_tags(s, d=0):
 import re
 
 def get_tags(s, d=0):
-	tag_regex = r'<(?P<tag>[^>]+)\b[^>]*>(?P<value>.*)</(?P=tag)>'
-	for m in re.finditer(tag_regex, s, re.DOTALL):
-		print ' '*d,'[[%s]] ==> "%s"' % (m.group('tag'), m.group('value'))
-		get_tags(m.group('value'), d+4)
+    tag_regex = r'<(?P<tag>[^>]+)\b[^>]*>(?P<value>.*)</(?P=tag)>'
+    for m in re.finditer(tag_regex, s, re.DOTALL):
+        print ' '*d,'[[%s]] ==> "%s"' % (m.group('tag'), m.group('value'))
+        get_tags(m.group('value'), d+4)
 
 content = open('demo.txt', 'r').read()
 

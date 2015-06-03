@@ -6,9 +6,9 @@ title: Home
 <div class="page">
     <ul>
     {% for friend in site.friends %}
-    	<li>
-    	<a href="{{ friend.url }}"><h3 class="post-title">{{ friend.name }} ( {{ friend.desc }} )</h3></a>
-    	</li>
+        <li>
+        <a href="{{ friend.url }}"><h3 class="post-title">{{ friend.name }} ( {{ friend.desc }} )</h3></a>
+        </li>
     {% endfor %}
     </ul>
 </div>

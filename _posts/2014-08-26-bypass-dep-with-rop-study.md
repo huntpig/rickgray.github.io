@@ -5,14 +5,16 @@ tags: [windows,security]
 ---
 
 
-#### **一、前言**
+## 一、前言
+
 上周去参加了ISCC竞赛，在比赛的时候由于自己专于渗透方向的题目而忽略了RE、PWN等题导致最终成绩不太理想（后来看了下PWN，才发现原来那么简单，太可惜了！），赛后本地搭环境对赛中的两道PWN题进行了分析，并且写出了相应的exp，在这里就不再多分析了。
 因为自己RE、PWN的水平也甚是一般，什么DEP、ASLR等windows下的防护措施也只是听说而已，从来都没有去仔细地了解和分析果，所以在这里也算是一个简单的学习笔记了吧。
 
 下面就说说利用ROP技术绕过DEP的简单实践。
 
-#### **二、DEP与ROP**
-**DEP（Data Execution Prevention）**意为数据执行保护，是Windows的一项安全机制，主要能够在内存上执行额外检查以帮助防止在系统上运行恶意代码，简单的说也就是以前直接将shellcode插入到堆栈中执行的方法已经不可行了，因为在开启DEP后，堆栈上的shellcode默认不可执行，因此也就不能使用以前的技术来成功exp了。
+## 二、DEP与ROP
+
+DEP（Data Execution Prevention）意为数据执行保护，是Windows的一项安全机制，主要能够在内存上执行额外检查以帮助防止在系统上运行恶意代码，简单的说也就是以前直接将shellcode插入到堆栈中执行的方法已经不可行了，因为在开启DEP后，堆栈上的shellcode默认不可执行，因此也就不能使用以前的技术来成功exp了。
 
 DEP工作状态可分为四种：
 
@@ -23,19 +25,20 @@ DEP工作状态可分为四种：
 
 那么如何绕过DEP保护从而执行置于堆栈中的攻击代码？ROP就是绕过DEP保护技术之一。
 
-**ROP（Return-oriented Programming）**，通过从已有的库或可执行文件中提取代码片段，构建恶意代码。
+ROP（Return-oriented Programming），通过从已有的库或可执行文件中提取代码片段，构建恶意代码。
 ROP技术其实是通过从已有的库或可执行文件中提取代码片段（汇编指令＋retn指令），将所有的代码片段组合在一起构成ROP链，从而完成特定的功能来绕过DEP（通常是调用系统API来关闭DEP的保护，然后再转到shellcode执行）。
 
-ROP链由一个个ROP小配件组成，ROP小配件由 ”汇编指令＋retn指令” 组成。比如现在有个ROP小配件想实现 pop ebx，那么这个小配件的指令就应该为 “pop ebx; retn;”，这是去系统内存中寻找，假设找到0x77c23436处恰好就是 “pop ebx; retn;”，那么这个小配件就是：``0x77c23436``。
+ROP链由一个个ROP小配件组成，ROP小配件由 “汇编指令＋retn指令” 组成。比如现在有个ROP小配件想实现`pop ebx`，那么这个小配件的指令就应该为 `pop ebx; retn;`，这是去系统内存中寻找，假设找到`0x77c23436`处恰好就是`pop ebx; retn;`，那么这个小配件就是：`0x77c23436`。
 
-#### **三、实践测试**
+## 三、实践测试
+
 测试环境：WindowsXP sp3，shellcode（ISCC2014 PWN1），Immnunity Debugger。
 
 实验简介：shellcode.exe是我在参加ISCC2014的线下个人赛时做过的一道PWN题目，程序在启动时会在本地1000端口绑定socket并进行接听，当有用户连接并且用户发送大于64bytes的数据时，堆栈会发生溢出，从而产生exp。
 
 首先，我们在不开启DEP保护的情况下，在XP上成功溢出并getshell（反弹）。接着，开启DEP保护，看能否成功溢出；最后，使用ROP技术绕过DEP，在开启DEP保护的情况下成功溢出。
 
-**1、没有DEP保护，成功溢出**
+### 1、没有DEP保护，成功溢出
 
 在WindowsXP sp3中，默认以Optin方式开启DEP，即仅将DEP保护应用于Windows系统服务和组件，对其他程序不予保护。shellcode.exe是用户进程，自然也不会受到DEP保护。下面我们直运行shellcode.exe（exp事先已经准备好）：
 
@@ -62,7 +65,7 @@ ROP链由一个个ROP小配件组成，ROP小配件由 ”汇编指令＋retn指
 （可以看到，在不开启DEP的情况下，通过溢出exp，已经成功得到反弹的shell）
 
 
-**2、开启DEP保护，溢出失败**
+### 2、开启DEP保护，溢出失败
 
 ![img]({{ site.url }}/public/img/article/2014-08-26-bypass-dep-with-rop-study/116-e1408992646908.png)
 
@@ -70,7 +73,7 @@ ROP链由一个个ROP小配件组成，ROP小配件由 ”汇编指令＋retn指
 
 ![img]({{ site.url }}/public/img/article/2014-08-26-bypass-dep-with-rop-study/117-e1408992028333.png)
 
-使用OD进行调试，可以看到我们是成功溢出了并且执行了 ``JMP ESP（0x7ffa4512``
+使用OD进行调试，可以看到我们是成功溢出了并且执行了`JMP ESP (0x7ffa4512)`
 
 ![img]({{ site.url }}/public/img/article/2014-08-26-bypass-dep-with-rop-study/118-e1408992055542.png)
 
@@ -80,22 +83,23 @@ ROP链由一个个ROP小配件组成，ROP小配件由 ”汇编指令＋retn指
 
 绕过DEP的方法能大致分为两种：
 
-* 新建可执行内存区域，将shellcode复制进去；
-相关函数：``VirtualAlloc()``、``HeapCreate()``、``WriteProcessMemory()``
-* 通过系统API关掉DEP保护；
-相关函数：``SetProcessDEPPolicy()``、``NtSetInformationProccess()``、``VirtualProtect()``
+* 新建可执行内存区域，将shellcode复制进去；相关函数：`VirtualAlloc()`、`HeapCreate()`、`WriteProcessMemory()`
+        
+* 通过系统API关掉DEP保护；相关函数：`SetProcessDEPPolicy()`、`NtSetInformationProccess()`、`VirtualProtect()`
 
 ![img]({{ site.url }}/public/img/article/2014-08-26-bypass-dep-with-rop-study/1201-e1408992591802.png)
 
-（1）＝don’t exist
-（2）＝will fail because of default DEP policy settings
+(1) ＝ don’t exist
+
+(2) ＝ will fail because of default DEP policy settings
 
 ROP链的作用就是用一连串的ROP小配件来实现这些函数的调用关闭DEP保护，然后转到shellcode上执行，下面通过一个简单的例子来说明如何利用ROP技术来绕过DEP执行shellcode。
 
-**3、利用ROP绕过DEP执行shellcode**
+### 3、利用ROP绕过DEP执行shellcode
+
 因为SetProcessDEPPolicy函数简单且ROP链构建相对容易，所有我们就构建ROP链来调用SetProcessDEPPolicy函数关闭DEP保护，然后专向我们shellcode执行。
 
-上面已经提到，ROP链是有许多ROP小配件构造，那么我们如何快速地找到相应的小配件来构成链呢？这里就要说说Immunity Debugger上的一个python模块－mona.py（详细介绍：http://redmine.corelan.be/projects/mona）。通过使用该模块，我们可以非常迅速地找到我们所需要各种小配件，如果没有对应的小配件，还可以通过各种变幻由其他小配件组合来达到相应的功能。
+上面已经提到，ROP链是有许多ROP小配件构造，那么我们如何快速地找到相应的小配件来构成链呢？这里就要说说Immunity Debugger上的一个python模块－[mona.py](http://redmine.corelan.be/projects/mona)。通过使用该模块，我们可以非常迅速地找到我们所需要各种小配件，如果没有对应的小配件，还可以通过各种变幻由其他小配件组合来达到相应的功能。
 
 下面简单的介绍一下如何使用mona.py搜索ROP小配件。
 
@@ -111,11 +115,11 @@ ROP链的作用就是用一连串的ROP小配件来实现这些函数的调用�
 
 ![img]({{ site.url }}/public/img/article/2014-08-26-bypass-dep-with-rop-study/122-e1408992192649.png)
 
-前面已经说过，我们构造ROP链是为了调用 ``SetProcessDEPPolicy()`` 关闭DEP，然后转到shellcode执行。其实整个ROP链的最终构造结果是构造出一个特定的寄存器结果，就像上图所示的一样，为什么呢？这里有个比较特别的地方，我们知道 “PUSHAD” 是依次将EAX、ECX、EDX...ESI、EDI入栈，那么当我们通过ROP链构造好各个寄存器并通过小配件 “PUSHAD RETN” 后，此时堆栈的结构大概就是这个样子的：
+前面已经说过，我们构造ROP链是为了调用`SetProcessDEPPolicy()`关闭DEP，然后转到shellcode执行。其实整个ROP链的最终构造结果是构造出一个特定的寄存器结果，就像上图所示的一样，为什么呢？这里有个比较特别的地方，我们知道 “PUSHAD” 是依次将EAX、ECX、EDX...ESI、EDI入栈，那么当我们通过ROP链构造好各个寄存器并通过小配件 “PUSHAD RETN” 后，此时堆栈的结构大概就是这个样子的：
 
 ![img]({{ site.url }}/public/img/article/2014-08-26-bypass-dep-with-rop-study/123-e1408992720997.png)
 
-这里可以看到，入栈前我们将EDI和ESI的值存储为 “RETN指令” 的地址，然后会执行EBP处的SetProcessDEPPolicy函数，因为 ``“PUSHAD RETN”`` 小配件在shellcode的上一个位置，执行完后ESP会指向shellcode，当SetProcessDEPPolicy执行完毕后会直接转到我们shellcode处执行（此时已经通过调用 ``SetProcessDEPPolicy()``取消DEP保护了）。
+这里可以看到，入栈前我们将EDI和ESI的值存储为 “RETN指令” 的地址，然后会执行EBP处的SetProcessDEPPolicy函数，因为`PUSHAD RETN`小配件在shellcode的上一个位置，执行完后ESP会指向shellcode，当SetProcessDEPPolicy执行完毕后会直接转到我们shellcode处执行（此时已经通过调用`SetProcessDEPPolicy()`取消DEP保护了）。
 
 经过分析可以看到我们构造具体的ROP链：
 
@@ -129,17 +133,17 @@ ROP链的作用就是用一连串的ROP小配件来实现这些函数的调用�
     0x????????,  # ptr RETN（ ”retn指令“ 的地址）
     0x????????,  # PUSHAD # RETN
 
-上面的问号代表我们需要寻找的ROP小配件的地址，这里给出几个小配件的寻找方法即可（其他同理），这里还要指出一个问题，很多时候我们需要的小配件不一定能在当前程序的执行模块中直接找到，但是我们可以通过其他方法来实现，比如我想使得EBX为0x00000000，我们可以先找到 ”POP EBX；RETN；” 将EBX先赋值为0xffffffff，然后在找到 “INC EBX；RETN；”，这样两个小配件合在一起执行达到了我们的目的。
+上面的问号代表我们需要寻找的ROP小配件的地址，这里给出几个小配件的寻找方法即可（其他同理），这里还要指出一个问题，很多时候我们需要的小配件不一定能在当前程序的执行模块中直接找到，但是我们可以通过其他方法来实现，比如我想使得EBX为0x00000000，我们可以先找到`POP EBX; RETN;`将EBX先赋值为0xffffffff，然后在找到`INC EBX; RETN;`，这样两个小配件合在一起执行达到了我们的目的。
 
-``“＃POP EBP ＃RETN ”小配件的寻找``
+**# POP EBP # RETN 小配件的寻找**
 
-其实，刚才通过执行mona.py已经在IM Debugger安装目录下记录了一些小配件的地址，打开rops.txt，通过查找我们可以找到在 0x7c87f30f 处找到我们想要的ROP小配件
+其实，刚才通过执行mona.py已经在IM Debugger安装目录下记录了一些小配件的地址，打开rops.txt，通过查找我们可以找到在`0x7c87f30f`处找到我们想要的ROP小配件
 
 ![img]({{ site.url }}/public/img/article/2014-08-26-bypass-dep-with-rop-study/124-e1408992298534.png)
 
-``“＃RETN ” 小配件``
+**# RETN 小配件**
 
-这里，我们可以重新在IM Debugger中利用mona.py模块来进行特定指令的查找，“retn” 指令的机器码为 “\xc3” ，我们在命令行中输入：
+这里，我们可以重新在IM Debugger中利用mona.py模块来进行特定指令的查找，`retn`指令的机器码为`\xc3`，我们在命令行中输入：
 
 ![img]({{ site.url }}/public/img/article/2014-08-26-bypass-dep-with-rop-study/125-e1408992322552.png)
 
@@ -165,7 +169,7 @@ ROP链的作用就是用一连串的ROP小配件来实现这些函数的调用�
     0x77bf5502,   # ptr RETN
     0x77d23ad9,   # PUSHAD # RETN [user32.dll]
 
-因为shellcode.exe在溢出点函数返回时是 ``“RETN 0x04”``，因此我加入了前两个ROP小配件进行过渡，使得整个ROP链能够串起来。
+因为shellcode.exe在溢出点函数返回时是`RETN 0x04`，因此我加入了前两个ROP小配件进行过渡，使得整个ROP链能够串起来。
 
 下面我们将我们构造的ROP链与最开始的exp重新结合一下，构成新的exp（利用ROP绕过DEP）。
 

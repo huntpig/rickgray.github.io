@@ -1,13 +1,13 @@
 ---
 layout: post
-title: "Simple Python Script To Scan Weak Things"
+title: "简单的敏感文件扫描脚本"
 tags: [python,security]
 ---
 
 
 好久没发文了，这次要说的只是一个小小的扫描工具，尽请实战，工具会不定期添加新功能（如果喜欢star一下吧 thx! :P）
 
-项目地址：https://github.com/RickGray/dirscan
+项目地址：[https://github.com/RickGray/dirscan](https://github.com/RickGray/dirscan)
 
 克隆项目至本地：
 
