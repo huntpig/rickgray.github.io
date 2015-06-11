@@ -85,7 +85,7 @@ XML实体攻击主要利用了XML实体中的外部实体结合各种协议来�
     ]>
     <root><foo>&content;</foo></root>
     
-![img]({{ site.url }}/public/img/article/2015-06-08-xml-entity-attack-review/file_read.png)
+![img]({{ site.url }}/public/img/article/2015-06-08-xml-entity-attack-review/file_read.jpeg)
 
 在使用`file://`协议时，有以下几种格式：
 
@@ -173,7 +173,7 @@ XML实体攻击主要利用了XML实体中的外部实体结合各种协议来�
     
 在DTD文件中声明了参数实体`payload`，其值是一个实体参数声明，因为是在DTD里面，所以可以引用上文的`%file;`参数实体，`%file;`参数实体为`c:/windows/win.ini`文本的内容。最后在原XML里引用DTD中的参数实体，此时就可以讲本地文件读取的内容通过HTTP发送出去（为了让请求的URL有效，这里对使用了`php://filter`协议，并将内容使用base64进行了编码）。
 
-![img]({{ site.url }}/public/img/article/2015-06-08-xml-entity-attack-review/redirect_file.png)
+![img]({{ site.url }}/public/img/article/2015-06-08-xml-entity-attack-review/redirect_file.jpeg)
 
 此方法针对数据不回显的情况及其有用。
 
