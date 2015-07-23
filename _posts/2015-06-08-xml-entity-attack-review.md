@@ -189,7 +189,7 @@ XML实体攻击主要利用了XML实体中的外部实体结合各种协议来�
     
 利用XXE攻击时需要结合实际环境才能发挥出其威力。:D
 
-### 参数
+### 参考
 
 * [http://www.ibm.com/developerworks/cn/xml/x-entities/](http://www.ibm.com/developerworks/cn/xml/x-entities/)
 * [https://www.youtube.com/watch?v=eHSNT8vWLfc](https://www.youtube.com/watch?v=eHSNT8vWLfc)
