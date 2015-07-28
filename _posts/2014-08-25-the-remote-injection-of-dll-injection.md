@@ -152,25 +152,25 @@ RemoteInject.cpp源码
 
 现在我们已经有了RemoteInject.exe和MessageBox.dll两个文件，我们将其放到c:\Test目录下，如下图
 
-![][{{ site.url }}/public/img/article/2014-08-25-the-remote-injection-of-dll-injection/remote-1.png]
+![]({{ site.url }}/public/img/article/2014-08-25-the-remote-injection-of-dll-injection/remote-1.png)
 
 下面我们就拿”计算器“来进行注入测试吧，首先运行calc.exe，使用Process Explorer查看calc加载的Dll信息
 
-![][{{ site.url }}/public/img/article/2014-08-25-the-remote-injection-of-dll-injection/remote-2.png]
+![]({{ site.url }}/public/img/article/2014-08-25-the-remote-injection-of-dll-injection/remote-2.png)
 
 可以看到calc.exe的PID为3192（这个DLL注入时需要用到），且在Process Explore中搜索MessageBox.dll没有任何结果。
 
 下面打开终端，并执行下面这条命令：
 
-![][{{ site.url }}/public/img/article/2014-08-25-the-remote-injection-of-dll-injection/remote-3.png]
+![]({{ site.url }}/public/img/article/2014-08-25-the-remote-injection-of-dll-injection/remote-3.png)
 
 运行后，可以看到屏幕中央弹出了MessageBox，说明DLL被成功载入并且执行了，下面再一次查看calc.exe进程所加载的Dll文件信息，并搜索MessageBox.dll
 
-![][{{ site.url }}/public/img/article/2014-08-25-the-remote-injection-of-dll-injection/remote-4.png]
+![]({{ site.url }}/public/img/article/2014-08-25-the-remote-injection-of-dll-injection/remote-4.png)
 
 通过上图可以看到，MessageBox.dll被成功的注入到calc.exe的进程当中，所以当我们关闭calc.exe时，肯定会弹出卸载成功的提示窗，如下图所示
 
-![][{{ site.url }}/public/img/article/2014-08-25-the-remote-injection-of-dll-injection/remote-5.png]
+![]({{ site.url }}/public/img/article/2014-08-25-the-remote-injection-of-dll-injection/remote-5.png)
 
 到这里，整个DLL远程注入的示例就完成了。
 
