@@ -60,7 +60,7 @@ int main(int argc, char* argv[], char* envp[]){
     LETMEWIN
     good job :)
     mommy! I think I know what a file descriptor is!!
-    
+
 
 ### [collision]
 
@@ -232,3 +232,196 @@ int main(){
     Good!
     Mommy, I thought libc random is unpredictable...
     
+
+### [input]
+
+> Mom? how can I pass my input to a computer program?
+>
+> ssh input@pwnable.kr -p2222 (pw:guest)
+
+此题提供了一段较长的代码，考察 linux 下基础编程知识，其完整代码如下。
+
+{% highlight c %}
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
+int main(int argc, char* argv[], char* envp[]){
+    printf("Welcome to pwnable.kr\n");
+    printf("Let's see if you know how to give input to program\n");
+    printf("Just give me correct inputs then you will get the flag :)\n");
+
+    // argv
+    if(argc != 100) return 0;
+    if(strcmp(argv['A'],"\x00")) return 0;
+    if(strcmp(argv['B'],"\x20\x0a\x0d")) return 0;
+    printf("Stage 1 clear!\n");
+
+    // stdio
+    char buf[4];
+    read(0, buf, 4);
+    if(memcmp(buf, "\x00\x0a\x00\xff", 4)) return 0;
+    read(2, buf, 4);
+        if(memcmp(buf, "\x00\x0a\x02\xff", 4)) return 0;
+    printf("Stage 2 clear!\n");
+
+    // env
+    if(strcmp("\xca\xfe\xba\xbe", getenv("\xde\xad\xbe\xef"))) return 0;
+    printf("Stage 3 clear!\n");
+
+    // file
+    FILE* fp = fopen("\x0a", "r");
+    if(!fp) return 0;
+    if( fread(buf, 4, 1, fp)!=1 ) return 0;
+    if( memcmp(buf, "\x00\x00\x00\x00", 4) ) return 0;
+    fclose(fp);
+    printf("Stage 4 clear!\n");
+
+    // network
+    int sd, cd;
+    struct sockaddr_in saddr, caddr;
+    sd = socket(AF_INET, SOCK_STREAM, 0);
+    if(sd == -1){
+        printf("socket error, tell admin\n");
+        return 0;
+    }
+    saddr.sin_family = AF_INET;
+    saddr.sin_addr.s_addr = INADDR_ANY;
+    saddr.sin_port = htons( atoi(argv['C']) );
+    if(bind(sd, (struct sockaddr*)&saddr, sizeof(saddr)) < 0){
+        printf("bind error, use another port\n");
+            return 1;
+    }
+    listen(sd, 1);
+    int c = sizeof(struct sockaddr_in);
+    cd = accept(sd, (struct sockaddr *)&caddr, (socklen_t*)&c);
+    if(cd < 0){
+        printf("accept error, tell admin\n");
+        return 0;
+    }
+    if( recv(cd, buf, 4, 0) != 4 ) return 0;
+    if(memcmp(buf, "\xde\xad\xbe\xef", 4)) return 0;
+    printf("Stage 5 clear!\n");
+
+    // here's your flag
+    system("/bin/cat flag");
+    return 0;
+}
+{% endhighlight %}
+
+程序判断了命令行参数和两个特定位的参数值，由于不可打印符的存在，所以将此题需要进行 c 编程，将需要的变量参数和环境变量通过 `execve()` 函数传递给 `/home/input/input` 程序。
+
+例如针对下面这段参数判断：
+
+    if(argc != 100) return 0;
+    if(strcmp(argv['A'],"\x00")) return 0;
+    if(strcmp(argv['B'],"\x20\x0a\x0d")) return 0;
+    printf("Stage 1 clear!\n");
+    
+可以使用如下程序进行 bypass：
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
+int main() {
+   char* argv[101] = {[0 ... 99] = "A"};
+   argv['A'] = "\x00";
+   argv['B'] = "\x20\x0a\x0d";
+   argv['C'] = "31337";
+
+   execve("/home/input/input", argv, NULL);
+
+
+   return 0;
+}
+将以上代码 `copy` 到服务器的 `/tmp` 目录下，然后编译运行：
+
+	input@ubuntu:/tmp/rrr$ ./bypass_input
+	Welcome to pwnable.kr
+	Let's see if you know how to give input to program
+	Just give me correct inputs then you will get the flag :)
+	Stage 1 clear!
+
+输入输出部分需要使用亲子进程间的通信，这里有一片文章介绍的非常详细-[《Linux环境进程间通信（一）》](http://www.ibm.com/developerworks/cn/linux/l-ipc/part1/)，这里就不过多阐述了。
+
+环境变量直接定义 `char* envp[2] = {"\xde\xad\xbe\xef=\xca\xfe\xba\xbe"};` 即可通过 Stage 3。
+
+文件部分直接使用如下代码，进行文件创建并将要求的字符写入即可：
+
+    FILE* fp = fopen("\x0a", "wb");
+    if(!fp) {
+        printf("file create error!\n");
+        exit(-1);
+    }
+    fwrite("\x00\x00\x00\x00", 4, 1, fp);
+    fclose(fp);
+
+在 Stage 5 部分，直接利用 python 程序向预先设置好的监听端口 `31337` 发送对应字符 `\xde\xad\xbe\xef` 即可通过。
+
+最终的利用程序如下：
+
+{% highlight c %}
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
+int main() {
+    char* argv[101] = {[0 ... 99] = "A"};
+    argv['A'] = "\x00";
+    argv['B'] = "\x20\x0a\x0d";
+    argv['C'] = "31337";
+
+    char* envp[2] = {"\xde\xad\xbe\xef=\xca\xfe\xba\xbe"};
+
+    int pipe1[2], pipe2[2];
+    if(pipe(pipe1) < 0 || pipe(pipe2) < 0) {
+        printf("pipe error!\n");
+        exit(-1);
+    }
+
+    FILE* fp = fopen("\x0a", "wb");
+    if(!fp) {
+        printf("file create error!\n");
+        exit(-1);
+    }
+    fwrite("\x00\x00\x00\x00", 4, 1, fp);
+    fclose(fp);
+
+    if(fork() == 0) {
+        // Parent processing
+        printf("Parent processing is here...\n");
+        dup2(pipe1[0], 0);
+        close(pipe1[1]);
+
+        dup2(pipe2[0], 2);
+        close(pipe2[1]);
+
+        execve("/home/input/input", argv, envp);
+    } else {
+        // Child processing
+        printf("Parent processing is here...\n");
+        write(pipe1[1], "\x00\x0a\x00\xff", 4);
+        write(pipe2[1], "\x00\x0a\x02\xff", 4);
+
+        sleep(30); 
+    }
+
+
+    return 0;
+}
+{% endhighlight %}
+
+将其 copy 到服务器 `/tmp` 目录下，编译运行，并将 `/home/input/flag` 文件链接到该目录下。Stage 1,2,3,4 会依次通过并在子进程中开始 `sleep(30)`，这时候另起终端使用借助 `python` 和 `nc` 直接向本地 `31337` 端口发送数据：
+
+	python -c "print '\xde\xad\xbe\xef'" | nc 127.0.0.1 31337
+
+![]({{ site.url }}/public/img/article/2015-07-24-toddler-s-bottle-writeup-pwnable-kr/input-1.png)
+
