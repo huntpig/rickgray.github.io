@@ -121,6 +121,7 @@ int main(int argc, char* argv[]){
 > Is that true?
 >
 > Download : http://pwnable.kr/bin/bof
+> 
 > Download : http://pwnable.kr/bin/bof.c
 >
 > Running at : nc pwnable.kr 9000
@@ -182,6 +183,8 @@ int main(int argc, char* argv[]){
 通过 UPX 成功解压缩后得到 `flag-upx`，拖入 IDA 进行静态分析，发现在 `0x0000000000401184` 处引用了一个 `flag` 变量，通过 IDA 的交叉引用功能找到了该字符串，此值即为 flag。
 
 ![]({{ site.url }}/public/img/article/2015-07-24-toddler-s-bottle-writeup-pwnable-kr/flag-2.png)
+
+	UPX...? sounds like a delivery service :)
 
 
 ### [passcode]
@@ -322,6 +325,7 @@ int main(int argc, char* argv[], char* envp[]){
     
 可以使用如下程序进行 bypass：
 
+{% highlight c %}
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -339,6 +343,8 @@ int main() {
 
    return 0;
 }
+{% endhighlight %}
+
 将以上代码 `copy` 到服务器的 `/tmp` 目录下，然后编译运行：
 
 	input@ubuntu:/tmp/rrr$ ./bypass_input
