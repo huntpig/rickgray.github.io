@@ -13,7 +13,7 @@ PLT（Procedure Linkage Table）：过程链接表的作用是将位置无关的
 
 GOT 位于 `.got.plt` section 中，而 PLT 位于 `.plt` section中。下面给出一示例程序：
 
-{% highlight c %}
+```c
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-{% endhighlight %}
+```
 
 编译该程序：
 

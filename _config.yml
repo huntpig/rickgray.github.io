@@ -5,12 +5,15 @@
 # relative_permalinks: true
 
 # Setup
-title:               "RickGray"
-tagline:             "Quiet And Powerful"
-description:         "Something Specail"
-url:                 "http://rickgray.me"
-baseurl:             ""
-paginate:            2
+
+highlighter:    pygments
+
+title:          "RickGray"
+tagline:        "Quiet And Powerful"
+description:    "Something Specail"
+url:            "http://rickgray.me"
+baseurl:        ""
+paginate:       2
 
 # Custom vars
 friends:
