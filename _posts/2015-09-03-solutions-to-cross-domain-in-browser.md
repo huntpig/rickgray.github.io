@@ -403,7 +403,7 @@ curl_close($curl);
 
 当然，上面所列出的这些跨域姿势并不是全部（还有 Flash 等），并不是每个都那么的好用和灵活，不同的项目有不同的需求，跨域方法需要根据实际需求进行调整和变换。：）
 
-## 参考
+### 参考
 
 * [http://www.cnblogs.com/rainman/archive/2011/02/20/1959325.html](http://www.cnblogs.com/rainman/archive/2011/02/20/1959325.html)
 * [https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS)
