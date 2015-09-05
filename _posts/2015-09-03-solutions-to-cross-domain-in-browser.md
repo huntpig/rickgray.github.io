@@ -337,7 +337,70 @@ xml.send();
 
 ### 1. 代理服务（Proxy）
 
-（撸代码中。。。）
+在网站 B 不可控，即不能设置网站 B 的相关设置时，最有效的方法就是建立中间代理了。
+
+网站 A 将访问网站 B 的请求通过参数的形式发送给代理服务器（Proxy），代理服务器收到请求后转而去访问网站 B，然后将获取的信息再返回给网站 A，形成一个数据请求回路。
+
+	-------------------------------
+	  --request->   --request->
+	A				 C 				   B
+	  <-response-	   <-response-
+	-------------------------------
+	
+`http://a.0xfa.club/proxy/in.html` 源码：
+
+{% highlight html %}
+<html>
+<head>
+  <title>Proxy Site A</title>
+</head>
+<body>
+<script>
+var xhr = new XMLHttpRequest();
+var proxyUrl = 'http://a.0xfa.club/proxy/proxy.php';
+xhr.open('post', proxyUrl, true);
+xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+xhr.send('method=get&target=http://b.0xfa.club/proxy/data.html&data=');
+xhr.onreadystatechange = function() {
+	if (xhr.readyState == 4 && xhr.status==200) {
+		console.log(xhr.responseText)
+	}
+}
+</script>
+</body>
+</html>
+{% endhighlight %}
+
+`http://b.0xfa.club/proxy/data.html` 源码：
+
+	Hello Site A!!
+	
+代理服务代码（可以不与网站 A 同源，设置 `Access-Control-Allow-Origin` 相应头即可），代码如下：
+
+{% highlight php %}
+<?php
+header('Access-Control-Allow-Origin: *');
+
+$method = $_REQUEST['method'];
+$target = $_REQUEST['target'];
+$data = $_REQUEST['data'];
+
+$curl = curl_init();
+curl_setopt($curl, CURLOPT_URL, $target);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, 0);
+
+if ($method == 'post') {
+	curl_setopt($curl, CURLOPT_POST, 1);
+	curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+}
+
+curl_exec($curl);
+curl_close($curl);
+{% endhighlight %}
+
+具体参数接口可根据需求进行设定，该方法的好处就是灵活，定制型高，缺点就是需要自行构建代理服务。（上面代理代码小心测试，有漏洞噢！）
+
+![]({{ site.url }}/public/img/article/2015-09-03-solutions-to-cross-domain-in-browser/10.png)
 
 ### 记在最后
 
