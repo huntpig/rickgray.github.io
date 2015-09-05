@@ -38,13 +38,13 @@ tags: [web, security]
 
 网站 B 上有一资源文件 `data.html`，其 URL 为 `http://b.0xfa.club/data.html`，内容如下：
 
-```html
+{% highlight html %}
 <p id="data">Hello A Site!!</p>
-```	
+{% endhighlight %}	
 	
 如果网站 A 想要获取 `id="data"` 的文本值 `Hello A Site!!`，在不考虑同源策略的情况下可以有如下代码：
 
-```html
+{% highlight html %}
 <html>
 <head>
   <title>a.0xfa.club/in.html</title>
@@ -62,7 +62,7 @@ document.body.appendChild(iframe);
 </script>
 </body>
 </html>
-```
+{% endhighlight %}
 
 但是实际访问情况下，由于浏览器的同源策略限制，并不能成功获取数据并通过调试终端输出数据，浏览器一般会在终端下输出错误，提示跨域访问失败。（此处为 Chrome）
 
@@ -72,7 +72,7 @@ document.body.appendChild(iframe);
 
 `http://a.0xfa.club/in.html` 源码：
 
-```html
+{% highlight html %}
 <html>
 <head>
   <title>a.0xfa.club/in.html</title>
@@ -91,16 +91,16 @@ document.body.appendChild(iframe);
 </script>
 </body>
 </html>
-```
+{% endhighlight %}
 
 `http://b.0xfa.club/data.html` 源码：
 
-```html
+{% highlight html %}
 <script>
 document.domain = '0xfa.club';
 </script>
 <p id="data">Hello A Site!!</p>
-```
+{% endhighlight %}
 
 通过设置双方网站 `document.domain` 为同一主域，再次访问后，可以看到在访问 `http://a.0xfa.club/in.html` 页面时，成功获取 `http://b.0xfa.club/data.html` 中的数据并在调试窗口打印出来。
 
@@ -114,7 +114,7 @@ document.domain = '0xfa.club';
 
 `http://a.0xfa.club/hash/in.html` 源码：
 
-```html
+{% highlight html %}
 <html>
 <head>
   <title>Site A</title>
@@ -138,11 +138,11 @@ setInterval(checkOut, 2000);
 </script>
 </body>
 </html>
-```
+{% endhighlight %}
 
 `http://b.0xfa.club/hash/data.html` 源码：
 
-```html
+{% highlight html %}
 <html>
 <head>
   <title>Site B</title>
@@ -160,15 +160,15 @@ try {
 </script>
 </body>
 </html>
-```
+{% endhighlight %}
 
 `http://a.0xfa.club/hash/proxy.html` 源码：
 
-```html
+{% highlight html %}
 <script>
 parent.parent.location.hash = self.location.hash.substring(1);
 </script>
-```
+{% endhighlight %}
 
 现在访问 `http://a.0xfa.club/hash/in.html` 页面时，网站 B 成功的修改了 `location.hash` 值并被网站 A 捕获，通过调试窗口打印出来。
 
@@ -180,7 +180,7 @@ parent.parent.location.hash = self.location.hash.substring(1);
 
 `http://a.0xfa.club/name/in.html` 源码：
 
-```html
+{% highlight html %}
 <html>
 <head>
   <title>a.0xfa.club/name/in.html</title>
@@ -205,15 +205,15 @@ document.body.appendChild(iframe);
 </script>
 </body>
 </html>
-```
+{% endhighlight %}
 
 `http://b.0xfa.club/name/data.html` 源码：
 
-```html
+{% highlight html %}
 <script>
 window.name = 'content of "b.0xfa.club"';
 </script>
-```
+{% endhighlight %}
 
 访问网站 A 的页面 `http://a.0xfa.club/name/in.html`，页面动态创建 `iframe` 加载网站 B 的资源 `http://b.0xfa.club/name/data.html`，而网站 B 的页面将需要传递的数据通过 `window.name` 进行设置。待动态创建的 `iframe` 加载完毕后，网站 A 的页面再通过更改 `iframe.contentWindow.location` 来使得加载的内容符合同源策略，但是此时的 `iframe` 框的 `window.name` 值已经被网站 B 上的页面设置过了，所以其值会被设置为 `content of "b.0xfa.club"`。
 
@@ -225,18 +225,18 @@ window.name = 'content of "b.0xfa.club"';
 
 `http://a.0xfa.club/script/in.html` 源码：
 
-```html
+{% highlight html %}
 <script src="http://b.0xfa.club/script/data.html" id="p"></script>
 <script>
 console.log(data);
 </script>
-```
+{% endhighlight %}
 
 `http://b.0xfa.club/script/data.html` 源码：
 
-```html
+{% highlight html %}
 var data = 'b site data';
-```
+{% endhighlight %}
 
 ![]({{ site.url }}/public/img/article/2015-09-03-solutions-to-cross-domain-in-browser/5.png)
 
@@ -246,7 +246,7 @@ html5 中提供了一个安全跨域传输的 API - postMessage ([详细文档](
 
 `http://a.0xfa.club/html5/in.html` 源码：
 
-```html
+{% highlight html %}
 <html>
 <head>
   <title>Html5 postMessage</title>
@@ -263,12 +263,11 @@ function changeColor() {
 <a href="#" onclick="changeColor()">Click here to change "iframe" color</a>
 </body>
 </html>
-```
-
+{% endhighlight %}
 
 `http://b.0xfa.club/html5/data.html` 源码：
 
-```html
+{% highlight html %}
 <html>
 <head>
   <title>Site B</title>
@@ -287,7 +286,7 @@ window.addEventListener('message', function() {
 </script>
 </body>
 </html>
-```
+{% endhighlight %}
 
 这里网站 A 的页面通过向内嵌的网站 B 的页面发送新的背景颜色值，网站 B 页面收到新值后修改当前背景颜色。通过这个简单的演示足以说明 html5 中 postMessage 在进行跨域传输时的便捷性。
 
@@ -305,15 +304,15 @@ CORS 名为跨域资源共享（Cross-Origin Resource Sharing），是通过控�
 
 这里网站 B 使用 PHP 来设置 `Access-Control-Allow-Origin` 响应头字段。
 
-```php
+{% highlight php %}
 <?php
 //header("Access-Control-Allow-Origin: *");  //先注释掉，看网站 A 是否能成功请求资源
 echo "Site B PHP resource!!";
-```
+{% endhighlight %}
 
 网站 A 的页面 `http://a.0xfa.club/cors/in.html` 通过 `XMLHttpRequest` 来请求网站 B 的页面资源 `http://b.0xfa.club/cors/data.php`：
 
-```html
+{% highlight html %}
 <script>
 var xml = new XMLHttpRequest();
 xml.open('get', 'http://b.0xfa.club/cors/data.php', true);
@@ -324,7 +323,7 @@ xml.onreadystatechange = function() {
 }
 xml.send();
 </script>
-```
+{% endhighlight %}
 
 尝试访问，发现在不设置网站 B 页面的响应头字段 `Access-Control-Allow-Origin`，同样会被同源策略所限制。
 
