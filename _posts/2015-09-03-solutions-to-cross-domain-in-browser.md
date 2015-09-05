@@ -263,7 +263,8 @@ function changeColor() {
 <a href="#" onclick="changeColor()">Click here to change "iframe" color</a>
 </body>
 </html>
-<% endhighlight %}
+```
+
 
 `http://b.0xfa.club/html5/data.html` 源码：
 
@@ -304,7 +305,7 @@ CORS 名为跨域资源共享（Cross-Origin Resource Sharing），是通过控�
 
 这里网站 B 使用 PHP 来设置 `Access-Control-Allow-Origin` 响应头字段。
 
-{% highlight php %}
+```php
 <?php
 //header("Access-Control-Allow-Origin: *");  //先注释掉，看网站 A 是否能成功请求资源
 echo "Site B PHP resource!!";
