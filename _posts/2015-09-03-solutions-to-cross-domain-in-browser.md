@@ -341,11 +341,8 @@ xml.send();
 
 网站 A 将访问网站 B 的请求通过参数的形式发送给代理服务器（Proxy），代理服务器收到请求后转而去访问网站 B，然后将获取的信息再返回给网站 A，形成一个数据请求回路。
 
-	-------------------------------
-	  --request->   --request->
-	A				 C 				   B
-	  <-response-	   <-response-
-	-------------------------------
+	A  --request-> C --request->  B
+    A  <-response- C <-response-  B
 	
 `http://a.0xfa.club/proxy/in.html` 源码：
 
