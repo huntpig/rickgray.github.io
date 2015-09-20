@@ -37,4 +37,4 @@ tags: [python,security]
 
 如果遇到Bug请直接Git提issus :)
 
-![img]({{ site.url }}/public/img/article/2015-04-15-Simple-Python-Script-To-Scan-Weak-Things/screenshot.png)
+![img]({{ site.url }}/public/img/article/2015-04-15-simple-python-script-to-scan-weak-things/screenshot.png)
