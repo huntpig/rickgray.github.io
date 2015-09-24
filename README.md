@@ -1,4 +1,1 @@
-blog
-====
-
-RickGray's Blog
+http://rickgray.me

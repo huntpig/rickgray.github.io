@@ -1,0 +1,138 @@
+/* Write your styles */
+body {
+  background: #f2f2f2;
+  font-weight: 500
+}
+
+.m-container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 920px;
+  padding-left: 3em;
+  padding-right: 3em;
+}
+
+@media only screen and (max-width: 860px) {
+  .m-container {
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.m-topbar {
+  background: #fff;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.m-content {
+  background: #fff;
+  margin-top: 2em;
+  padding-bottom: 1em;
+}
+
+.m-content-header {
+  margin-left: 1em;
+  margin-right: 1em;
+  margin-bottom: 1em;
+  padding-top: 10px;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.m-content-header .m-header {
+  font-size: 20px;
+  font-weight: 600;
+  margin-right: 0.3em;
+}
+
+.m-content-header .m-post-meta {
+  margin-top: 0.8em;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.m-content-header .m-post-meta span {
+  margin-right: 0.8em;
+}
+
+.m-archive {
+  font-size: 16px;
+}
+
+.m-archive ul {
+  padding-left: 1.5em;
+}
+
+.m-archive ul li {
+  list-style: none;
+  line-height: 1.2em;
+  margin: 0 0 -10px;
+}
+
+.m-archive ul li a {
+  text-decoration: none;
+  color: #3e3e3e;
+  margin-left: 1em;
+}
+
+.m-archive a:hover {
+  color: #cf0e0e;
+}
+
+@media only screen and (max-width: 460px) {
+  .m-archive small {
+    display: none;
+  }
+  .m-archive ul {
+    padding-left: 2em;
+    padding-right: 1em;
+  }
+  .m-archive ul li {
+    list-style: inherit;
+    margin-left: 1em;
+  }
+  .m-archive ul li a {
+    margin-left: 0;
+  }
+}
+
+.m-footer {
+  padding-top: 1em;
+  text-align: center;
+}
+
+.m-post-content {
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+  text-align: justify;
+  word-break: break-all;
+}
+
+.m-post-content img {
+  display: block;
+  max-width: 100%;
+  margin: 0 0 1rem;
+  border-radius: 5px;
+}
+
+.m-post-content code {
+  white-space: pre-wrap;
+}
+
+.m-post-content ul {
+  padding-left: 1.5em;
+}
+
+.m-post-content a {
+  text-decoration: none;
+  color: #38AEC5;
+  font-style: italic;
+  font-weight: 650;
+}
+
+.m-post-content a:hover {
+  color: #cf0e0e;
+}
