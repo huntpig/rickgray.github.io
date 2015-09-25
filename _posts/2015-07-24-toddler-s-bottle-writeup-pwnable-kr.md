@@ -491,3 +491,86 @@ int main() {
 
 ![]({{ site.url }}/public/img/article/2015-07-24-toddler-s-bottle-writeup-pwnable-kr/input-1.png)
 
+### [mistake]
+
+> We all make mistakes, let's move on.
+> 
+> (don't take this too seriously, no fancy hacking skill is required at all)
+>
+> This task is based on real event
+> Thanks to dhmonkey
+>
+> hint : operator priority
+>
+> ssh mistake@pwnable.kr -p2222 (pw:guest)
+
+`mistake.c` 代码：
+
+{% highlight c %}
+#include <stdio.h>
+#include <fcntl.h>
+
+#define PW_LEN 10
+#define XORKEY 1
+
+void xor(char* s, int len){
+	int i;
+	for(i=0; i<len; i++){
+		s[i] ^= XORKEY;
+	}
+}
+
+int main(int argc, char* argv[]){
+
+	int fd;
+	if(fd=open("/home/mistake/password",O_RDONLY,0400) < 0){
+		printf("can't open password %d\n", fd);
+		return 0;
+	}
+
+	printf("do not bruteforce...\n");
+	sleep(time(0)%20);
+
+	char pw_buf[PW_LEN+1];
+	int len;
+	if(!(len=read(fd,pw_buf,PW_LEN) > 0)){
+		printf("read error\n");
+		close(fd);
+		return 0;
+	}
+
+	char pw_buf2[PW_LEN+1];
+	printf("input password : ");
+	scanf("%10s", pw_buf2);
+
+	// xor your input
+	xor(pw_buf2, 10);
+
+	if(!strncmp(pw_buf, pw_buf2, PW_LEN)){
+		printf("Password OK\n");
+		system("/bin/cat flag\n");
+	}
+	else{
+		printf("Wrong Password\n");
+	}
+
+	close(fd);
+	return 0;
+}
+{% endhighlight %}
+
+大致一看，发现程序流程是从 `password` 文件中读取10字节，然后让用户输入10字节，取其与1的异或值与 `password` 文件中的头10字节进行比较，若相等则返回 flag。
+
+但是呢，这里有一个问题，题目中也给出了提示-"操作符运算级别"，程序在尝试打开 `password` 文件时，代码如下：
+
+    if(fd=open("/home/mistake/password",O_RDONLY,0400) < 0)
+    
+由于 小于符号`<` 优先级高于 赋值号`=`，所以成功打开文件后 `open()` 函数返回值大于0，fd 最终会被赋值为 `0`，因此在下面 read(fd) 的过程中从 stdin 输入缓冲区获取 `password` 的头10字节，这样就能预先控制 `password` 的10字节，拿到 flag。
+
+    mistake@ubuntu:~$ ./mistake
+    do not bruteforce...
+    0000000000
+    input password : 1111111111
+    Password OK
+    Mommy, the operator priority always confuses me :(\
+    
