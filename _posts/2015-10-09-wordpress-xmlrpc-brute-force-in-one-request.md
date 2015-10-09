@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "WordPress 利用xmlrpc中的system.multicall接口进行快速爆破"
+title: "WordPress 利用 system.multicall RPC进行快速爆破"
 tags: [security, web]
 ---
 
