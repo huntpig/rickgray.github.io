@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "利用 WordPress XMLRPC 高效爆破 原理分析"
+title: "WordPress 利用XMLRPC高效爆破 原理分析"
 tags: [web, security]
 ---
 
