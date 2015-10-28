@@ -6,12 +6,13 @@
 
 # Setup
 
-title:          "RickGray"
+title:          "rickgray.me"
 tagline:        "Quiet And Powerful"
 description:    "Something Specail"
 url:            "http://rickgray.me"
 baseurl:        ""
-paginate:       2
+paginate:       18
+paginate_path:  "/page:num"
 
 # Custom vars
 friends:

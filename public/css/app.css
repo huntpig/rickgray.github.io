@@ -194,3 +194,7 @@ table {
 .lp-not-found .lp-not-found-content {
   font-size: 1.8rem;
 }
+
+.lp-page-links {
+  text-align: center;
+}
