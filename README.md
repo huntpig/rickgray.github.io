@@ -1,1 +1,0 @@
-http://rickgray.me

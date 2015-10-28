@@ -2,19 +2,19 @@
 layout: base
 ---
 
-<div class="m-container">
-  <div class="m-content">
-    <div class="m-content-header">
-        <span class="m-header">{{ page.title }}</span>
-        <div class="m-post-meta">
-          <i class="am-icon-calculator"></i><span>{{ page.date | date: "%Y-%m-%d" }}</span>
-          <i class="am-icon-tags"></i><span>{{ page.tags | join: ", " }}</span>
-        </div>
-        <hr>
+<div class="am-container lp-container">
+  <div class="lp-post">
+    <div class="lp-post-header">
+      <h1 class="lp-post-title">{{ page.title }}</h1>
+      <div class="lp-post-meta">
+        <i class="am-icon-calculator"></i><span class="lp-post-date">{{ page.date | date: "%Y-%m-%d" }}</span>
+        <i class="am-icon-tags"></i><span class="lp-post-tags">{{ page.tags | join: ", " }}</span>
+      </div>
     </div>
-    
-    <div class="m-post-content">
+    <div class="lp-post-content">
     {{ content }}
     </div>
+    
+    {% include disqus.html %}
   </div>
 </div>
