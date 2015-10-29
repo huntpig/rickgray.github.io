@@ -35,7 +35,7 @@ table {
   background: #fff;
 }
 
-.lp-topbar .lp-topbar-brand {
+.lp-topbar-brand {
   font-size: 120%;
   font-weight: 500;
 }
@@ -90,14 +90,14 @@ table {
   padding-left: .5rem;
 }
 
-.lp-post .lp-post-title {
+.lp-post-title {
   font-size: 2.3rem;
   font-weight: 500;
   margin-left: .5rem;
   margin-bottom: .5rem;
 }
 
-.lp-post .lp-post-meta {
+.lp-post-meta {
   display: block;
   margin-left: .5rem;
   margin-bottom: 2.2rem;
@@ -105,38 +105,38 @@ table {
   font-weight: 600;
 }
 
-.lp-post .lp-post-meta .lp-post-date {
+.lp-post-meta .lp-post-date {
   padding-left: .5rem;
   margin-right: .8rem;
 }
 
-.lp-post .lp-post-meta .lp-post-tags {
+.lp-post-meta .lp-post-tags {
   padding-left: .5rem;
 }
 
-.lp-post .lp-post-content {
+.lp-post-content {
   margin: .15rem;
   text-align: justify;
   word-break: break-all;
 }
 
-.lp-post .lp-post-content h1, h2, h3, h4, h5, h6{
+.lp-post-content h1, h2, h3, h4, h5, h6{
   margin: 0;
   margin-top: 2rem;
 }
 
-.lp-post .lp-post-content code {
+.lp-post-content code {
   white-space: pre-wrap;
 }
 
-.lp-post .lp-post-content pre {
+.lp-post-content pre {
   overflow: auto;
   display: block;
   white-space: pre;
   border-radius: 5px;
 }
 
-.lp-post .lp-post-content img {
+.lp-post-content img {
   display: block;
   max-width: 100%;
   margin: 0 0 1rem;
@@ -178,11 +178,11 @@ table {
     display: none;
   }
   
-  .lp-post .lp-post-title {
+  .lp-post-title {
     font-size: 2.1rem;
   }
   
-  .lp-post .lp-post-meta {
+  .lp-post-meta {
     font-size: 1.4rem;
   }
 }
@@ -191,7 +191,7 @@ table {
   padding-left: .5rem;
 }
 
-.lp-not-found .lp-not-found-content {
+.lp-not-found-content {
   font-size: 1.8rem;
 }
 
