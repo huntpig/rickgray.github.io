@@ -130,6 +130,7 @@ table {
 }
 
 .lp-post-content pre {
+  padding: 0;
   overflow: auto;
   display: block;
   white-space: pre;
