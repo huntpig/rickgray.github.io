@@ -20,7 +20,7 @@ tags: [web, php, security]
 
 通过观察服务端在处理PHP时的调用栈，可知服务端在处理上述请求时，会将 `ajax/api/hook/decodeArguments` 作为路由参数 `$_REQUEST['routestring']` 传递给地址路由处理过程。因其符合 `ajax/api/[controller]/[method]` 的 Ajax API 请求路由格式，会再调用 `vB5_Frontend_ApplicationLight` 实例中的 `handleAjaxApi()` 函数来进行相应的模块加载并调用处理函数：
 
-``` php
+{% highlight php %}
 protected function handleAjaxApi()
 {
 	$routeInfo = explode('/', $_REQUEST['routestring']);
@@ -32,11 +32,11 @@ protected function handleAjaxApi()
 	$params = array_merge($_POST, $_GET);
 	$this->sendAsJson(Api_InterfaceAbstract::instance(Api_InterfaceAbstract::API_LIGHT)->callApi($routeInfo[2], $routeInfo[3], $params, true));
 }
-```
+{% endhighlight %}
 
 请求的 `ajax/api/hook/decodeArguments` 会实例化 `hook` 类然后调用 `decodeArguments()` 函数，原文中所提及的触发点就在此处：
 
-``` php
+{% highlight php %}
 	public function decodeArguments($arguments)
 	{
 		if ($args = @unserialize($arguments))
@@ -46,30 +46,30 @@ protected function handleAjaxApi()
 			foreach ($args AS $varname => $value)
 			{
 				$result .= $varname;
-```
+{% endhighlight %}
 
 通过反序列化，我们可以使之能生成在执行环境上下文中已经定义好了的类实例，并通过寻找一个含有 `__wakeup()` 或者 `__destruct()` 魔术方法存在问题的类来进行利用。然后原文中所提到的利用方法并不是这样，其使用的是继承于 PHP 迭代器类型的 `vB_dB_Result` 类，由于 `$args = @unserialize($arguments)` 产生了一个迭代器 `vB_dB_Result` 类实例，因此在后面进行 `foreach` 操作时会首先调用其 `rewind()` 函数。
 
 而在 `rewind()` 函数处理过程中，会根据实例变量状态进行调用：
 
-``` php
+{% highlight php %}
 	public function rewind()
 	{
 		if ($this->recordset)
 		{
 			$this->db->free_result($this->recordset);
 		}
-```
+{% endhighlight %}
 
 这里就可以通过反序列化来控制 `$this->recordset` 的值，并且 `$this->db->free_result` 最终会调用：
 
-``` php
+{% highlight php %}
 	function free_result($queryresult)
 	{
 		$this->sql = '';
 		return @$this->functions['free_result']($queryresult);
 	}
-```
+{% endhighlight %}
 
 `$this->functions['free_result']` 原本的初始化值为 `mysql_free_result`，但是由于反序列化的原因，我们也能控制 `vB_dB_Result` 类实例中的 `db` 成员，更改其对应的 `functions['free_result']` 为我们想要执行的函数，因此一个任意代码执行就产生了。
 
@@ -77,7 +77,7 @@ protected function handleAjaxApi()
 
 观察一下原文中提供的 Payload 构造 PoC：
 
-``` php
+{% highlight php %}
 <?php
 class vB_Database {
        public $functions = array();
@@ -96,7 +96,7 @@ class vB_dB_Result {
 }
 
 print urlencode(serialize(new vB_dB_Result())) . "\n";
-```
+{% endhighlight %}
 
 通过第一部分的分析，我们已经清楚了整个漏洞的函数调用过程和原因，并且也已经得知哪些参数可以得到控制和利用。因此这里我们修改 `$this->functions['free_result'] = 'assert';` 和 `$this->recordset = 'var_dump(md5(1))';`，最终远程代码执行的的函数则会是 `assert('var_dump(md5(1))')`：
 
@@ -104,13 +104,13 @@ print urlencode(serialize(new vB_dB_Result())) . "\n";
 
 这个时候其实 RCE 已经非常的顺利了，但是在进行测试的时候却发现了原文所提供的 PoC 只能复现 5.0.x 版本的 vBulletin，而 5.1.x 版本的却不可以。通过本地搭建测试环境，并使用同样的 PoC 去测试，发现在 5.1.x 版本中 `vB_Database` 被定义成了抽象类：
 
-``` php
+{% highlight php %}
 abstract class vB_Database
 {
 	/**
 	 * The type of result set to return from the database for a specific row.
 	 */
-```
+{% endhighlight %}
 
 抽象类是不能直接进行实例化的，原文提供的 PoC 却是实例化的 `vB_Database` 类作为 `vB_dB_Result` 迭代器成员 `db` 的值，在服务端进行反序列化时会因为需要恢复实例为抽象类而导致失败：
 
@@ -124,7 +124,7 @@ abstract class vB_Database
     
 而终代码进行进行 autoload 的时候会解析传递的类名来动态构造尝试加载的源码文件路径：
 
-``` php
+{% highlight php %}
 ...省略
 	$fname = str_replace('_', '/', strtolower($class)) . '.php';
 
@@ -137,13 +137,13 @@ abstract class vB_Database
 			{
 				return true;
 			}
-```
+{% endhighlight %}
 
 上面这段代码存在于第一次调用的 `__autoload()` 里，可以看到对提供的类名以 `_` 进行了拆分，动态构造了加载路径（第二次 autoload() 的过程大致相同），简单分析一下就可以发现只有在反序列化 `vB_Database_MySQL` 和 `vB_Database_MySQLi` 这两个基于 `vB_Database` 抽象类的子类时，才能成功的动态加载其类定义所在的源码文件使得反序列化成功执行，最终才能控制参数进行任意代码执行。
 
 所以，针对 5.1.x 版本 vBulletin 的 PoC 就可以得到了，使用 `vB_Database_MySQL` 或者 `vB_Database_MySQLi` 作为迭代器 `vB_dB_Result` 成员 `db` 的值即可。具体 PoC 如下：
 
-``` php
+{% highlight php %}
 <?php
 class vB_Database_MySQL {
        public $functions = array();
@@ -162,7 +162,7 @@ class vB_dB_Result {
 }
 
 print urlencode(serialize(new vB_dB_Result())) . "\n";
-```
+{% endhighlight %}
 
 测试一下，成功执行 `assert('print("This Vuln In 5.1.7")')`：
 
