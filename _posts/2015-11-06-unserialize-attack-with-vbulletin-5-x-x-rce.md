@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "unserialize() 实战之 vBulletin 5.x.x 远程命令执行"
+title: "unserialize() 实战之 vBulletin 5.x.x 远程代码执行"
 tags: [web, php, security]
 ---
 
