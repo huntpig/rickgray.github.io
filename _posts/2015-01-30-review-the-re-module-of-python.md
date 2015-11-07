@@ -4,7 +4,6 @@ title: "Python re模块回顾"
 tags: [python]
 ---
 
-
 使用Python大法已经有一段时间了，re正则模块却一直都还没有吃透，所以重新回顾了该模块和Python中的正则表达式。这里推荐一个在线测试正则表达式的站点-[liveregex.com](https://www.liveregex.com)，对于理解正则匹配的过程是十分有帮助的。
 
 下面详细的给出正则表达式元字符和具体语法：

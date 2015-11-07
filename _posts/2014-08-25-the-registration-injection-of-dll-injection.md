@@ -5,7 +5,7 @@ tags: [windows, security]
 ---
 
 
-### 前言
+### 一、前言
 
 上一遍介绍了DLL远程注入的基本原理，在这篇文章中，就来看看另一个DLL注入的方法，注册表DLL注入。
 
@@ -13,7 +13,7 @@ tags: [windows, security]
 
 （User32.dll被加载到进程时，会获取AppInit_DLLs注册表项，若有值，则调用LoadLibrary() API加载用户DLL。所有，DLL注册表注入，并不会影响所有进程，只会影响加载了user32.dll的进程）
 
-### 实践
+### 二、实践
 
 （下面示例过程在windows 32位下测试成功）
 

@@ -4,8 +4,7 @@ title: "wpa_supplicant-强有力的终端wifi配置工具"
 tags: [linux]
 ---
 
-
-近日网购了一套[Raspberry-Pi2](https://www.raspberrypi.org/blog/raspberry-pi-2-on-sale/)，用来跑一些神秘脚本。因为树莓派是基于 ARM 架构的，所以给它装上了 [Ubuntu专版](https://wiki.ubuntu.com/ARM/RaspberryPi)，对于终端下基本的 `iwconfig` 命令可能对现代的多种加密方式的 wifi 已经不太适应了，取而代之的是支持多种加密方式（WEP, WPA and WPA2等）的 `wpa_supplicant` 更符合我的需求。
+最近网购了一套[Raspberry-Pi2](https://www.raspberrypi.org/blog/raspberry-pi-2-on-sale/)，用来跑一些神秘脚本。因为树莓派是基于 ARM 架构的，所以给它装上了 [Ubuntu专版](https://wiki.ubuntu.com/ARM/RaspberryPi)，对于终端下基本的 `iwconfig` 命令可能对现代的多种加密方式的 wifi 已经不太适应了，取而代之的是支持多种加密方式（WEP, WPA and WPA2等）的 `wpa_supplicant` 更符合我的需求。
 
 ### 一、安装
 

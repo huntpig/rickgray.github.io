@@ -4,7 +4,6 @@ title: "通过GDB调试理解GOT/PLT"
 tags: [linux, security]
 ---
 
-
 关于 Linux 中 ELF 文件格式可参考详细文档[《ELF_Format》](http://flint.cs.yale.edu/cs422/doc/ELF_Format.pdf)，本文仅记录笔者理解GOT/PLT的过程。
 
 GOT（Global Offset Table）：全局偏移表用于记录在 ELF 文件中所用到的共享库中符号的绝对地址。在程序刚开始运行时，GOT 表项是空的，当符号第一次被调用时会动态解析符号的绝对地址然后转去执行，并将被解析符号的绝对地址记录在 GOT 中，第二次调用同一符号时，由于 GOT 中已经记录了其绝对地址，直接转去执行即可（不用重新解析）。

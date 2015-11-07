@@ -4,15 +4,14 @@ title: "ROP技术绕过DEP初学习"
 tags: [windows,security]
 ---
 
-
-## 一、前言
+### 一、前言
 
 上周去参加了ISCC竞赛，在比赛的时候由于自己专于渗透方向的题目而忽略了RE、PWN等题导致最终成绩不太理想（后来看了下PWN，才发现原来那么简单，太可惜了！），赛后本地搭环境对赛中的两道PWN题进行了分析，并且写出了相应的exp，在这里就不再多分析了。
 因为自己RE、PWN的水平也甚是一般，什么DEP、ASLR等windows下的防护措施也只是听说而已，从来都没有去仔细地了解和分析果，所以在这里也算是一个简单的学习笔记了吧。
 
 下面就说说利用ROP技术绕过DEP的简单实践。
 
-## 二、DEP与ROP
+### 二、DEP与ROP
 
 DEP（Data Execution Prevention）意为数据执行保护，是Windows的一项安全机制，主要能够在内存上执行额外检查以帮助防止在系统上运行恶意代码，简单的说也就是以前直接将shellcode插入到堆栈中执行的方法已经不可行了，因为在开启DEP后，堆栈上的shellcode默认不可执行，因此也就不能使用以前的技术来成功exp了。
 
@@ -30,7 +29,7 @@ ROP技术其实是通过从已有的库或可执行文件中提取代码片段�
 
 ROP链由一个个ROP小配件组成，ROP小配件由 “汇编指令＋retn指令” 组成。比如现在有个ROP小配件想实现`pop ebx`，那么这个小配件的指令就应该为 `pop ebx; retn;`，这是去系统内存中寻找，假设找到`0x77c23436`处恰好就是`pop ebx; retn;`，那么这个小配件就是：`0x77c23436`。
 
-## 三、实践测试
+### 三、实践测试
 
 测试环境：WindowsXP sp3，shellcode（ISCC2014 PWN1），Immnunity Debugger。
 
@@ -38,7 +37,7 @@ ROP链由一个个ROP小配件组成，ROP小配件由 “汇编指令＋retn指
 
 首先，我们在不开启DEP保护的情况下，在XP上成功溢出并getshell（反弹）。接着，开启DEP保护，看能否成功溢出；最后，使用ROP技术绕过DEP，在开启DEP保护的情况下成功溢出。
 
-### 1、没有DEP保护，成功溢出
+#### 1、没有DEP保护，成功溢出
 
 在WindowsXP sp3中，默认以Optin方式开启DEP，即仅将DEP保护应用于Windows系统服务和组件，对其他程序不予保护。shellcode.exe是用户进程，自然也不会受到DEP保护。下面我们直运行shellcode.exe（exp事先已经准备好）：
 
@@ -65,7 +64,7 @@ ROP链由一个个ROP小配件组成，ROP小配件由 “汇编指令＋retn指
 （可以看到，在不开启DEP的情况下，通过溢出exp，已经成功得到反弹的shell）
 
 
-### 2、开启DEP保护，溢出失败
+#### 2、开启DEP保护，溢出失败
 
 ![img]({{ site.url }}/public/img/article/2014-08-26-bypass-dep-with-rop-study/116-e1408992646908.png)
 
@@ -95,7 +94,7 @@ ROP链由一个个ROP小配件组成，ROP小配件由 “汇编指令＋retn指
 
 ROP链的作用就是用一连串的ROP小配件来实现这些函数的调用关闭DEP保护，然后转到shellcode上执行，下面通过一个简单的例子来说明如何利用ROP技术来绕过DEP执行shellcode。
 
-### 3、利用ROP绕过DEP执行shellcode
+#### 3、利用ROP绕过DEP执行shellcode
 
 因为SetProcessDEPPolicy函数简单且ROP链构建相对容易，所有我们就构建ROP链来调用SetProcessDEPPolicy函数关闭DEP保护，然后专向我们shellcode执行。
 

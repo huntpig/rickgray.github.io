@@ -4,7 +4,6 @@ title: "OSX Install The Latest Metasploit"
 tags: [mac,msf]
 ---
 
-
 Mac集成强大的渗透神器metasploit。
 
 1. 从github上克隆Metasploit项目到本地；
@@ -13,7 +12,7 @@ Mac集成强大的渗透神器metasploit。
 
 3. 安装特定版本的ruby，并解决依赖；
 
-## 一、从github上克隆Metasploit项目到本地
+### 一、从github上克隆Metasploit项目到本地
 话说github真是什么都有，很多好的项目在上面都能找到，首先打开终端并输入下列命令，因为10.9.3自带了git，所以就不需要另外安装了。
 
     git clone https://github.com/rapid7/metasploit-framework.git /usr/local/share/metasploit-framework
@@ -24,7 +23,7 @@ Mac集成强大的渗透神器metasploit。
 
     export MSF_DATABASE_CONFIG=/usr/local/share/metasploit-framework/config/database.yml
 
-## 二、安装postgresql并进行配置
+### 二、安装postgresql并进行配置
 metasploit下载完后，不急着去配置，因为metasploit的默认数据库postgresql还没有装上。
 
 你可以直接使用brew来下载并自动安装postgresql，可以运行如下命令：
@@ -63,7 +62,7 @@ metasploit下载完后，不急着去配置，因为metasploit的默认数据库
     alias pg_start='pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start'  
     alias pg_stop='pg_ctl -D /usr/local/var/postgres stop'
 
-## 三、安装特定版本的ruby，并解决依赖
+### 三、安装特定版本的ruby，并解决依赖
 说到ruby的多版本管理，这里就要用最给力的工具了rbenv（可以在github上找到，也可以使用brew直接安装）
 
     brew install rbenv ruby-build
