@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "ROP技术绕过DEP初学习"
+title: "ROP 技术绕过 DEP 初学习"
 tags: [windows,security]
 ---
 

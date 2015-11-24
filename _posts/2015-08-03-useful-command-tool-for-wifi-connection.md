@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "wpa_supplicant-强有力的终端wifi配置工具"
+title: "wpa_supplicant - 强有力的终端 wifi 配置工具"
 tags: [linux]
 ---
 

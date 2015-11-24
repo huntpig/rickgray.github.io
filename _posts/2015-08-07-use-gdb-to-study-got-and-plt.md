@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "通过GDB调试理解GOT/PLT"
+title: "通过 GDB 调试理解 GOT/PLT"
 tags: [linux, security]
 ---
 

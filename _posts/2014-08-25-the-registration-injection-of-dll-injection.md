@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "DLL注入练习之注册表-AppInit_DLLs表项"
+title: "DLL 注入练习之注册表 - AppInit_DLLs 表项"
 tags: [windows, security]
 ---
 

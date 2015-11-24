@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Discuz全版本存储 XSS 分析"
+title: "Discuz 全版本存储 XSS 分析"
 tags: [web, security, xss]
 ---
 
