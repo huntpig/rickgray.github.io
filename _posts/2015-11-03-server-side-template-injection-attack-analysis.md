@@ -57,7 +57,7 @@ $output = $twig->render("Hello {$_GET['name']}");  // 将用户输入作为模�
 echo $output;
 {% endhighlight %}
 
-上面这段代码在构建模版时，拼接了用户输入作为模板的内容，现在如果再向服务端直接传递 JavaScript 代码，用户输入会原样输出，测试结果显而易见：
+上面这段代码在构建模版时，拼接了用户输入作为模板的内容，如果再向服务端直接传递 JavaScript 代码，用户输入会原样输出，测试结果显而易见：
 
 ![]({{ site.url }}/public/img/article/2015-11-03-server-side-template-injection-attack-to-smarty/2.png)
 
@@ -79,7 +79,7 @@ $output = $twig->render("Hello {$_GET['name']}");  // 将用户输入作为模�
 echo $output;
 {% endhighlight %}
 
-在 Twig 模板引擎里，`{% raw %}{{ var }}{% endraw }}` 除了可以输出传递的变量以外，还能执行一些基本的表达式然后将其结果作为该模板变量的值，例如这里用户输入 `name={% raw %}{{2*10}}{% endraw %}`，则在服务端拼接的模版内容为：
+在 Twig 模板引擎里，`{% raw %}{{ var }}{% endraw %}` 除了可以输出传递的变量以外，还能执行一些基本的表达式然后将其结果作为该模板变量的值，例如这里用户输入 `name={% raw %}{{2*10}}{% endraw %}`，则在服务端拼接的模版内容为：
 
 {% raw %}
     Hello {{2*10}}
