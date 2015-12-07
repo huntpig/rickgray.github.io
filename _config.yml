@@ -45,3 +45,6 @@ author:
 disqus:
     shortname: "rickgrayblog"
     show: False
+
+
+markdown: kramdown
