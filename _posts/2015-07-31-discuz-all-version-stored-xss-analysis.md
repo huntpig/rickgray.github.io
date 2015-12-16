@@ -24,7 +24,7 @@ Discuz在用户评论处设置了帖子管理员编辑评论的功能，由于�
 
 ![]({{ site.url }}/public/img/article/2015-07-31-discuz-all-version-stored-xss-analysis/4.png)
 
-而 $() 函数原型位于 /static/js/common.js 中：
+而 `$()` 函数原型位于 /static/js/common.js 中：
 
 ![]({{ site.url }}/public/img/article/2015-07-31-discuz-all-version-stored-xss-analysis/5.png)
 
