@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 
 接下来，我们使用 `gdb` 来对程序进行调试，观察程序在调用 `printf()` 函数时，GOT 的变化情况。
 
-因为程序逻辑需要输入参数，设置好参数后，在主函数处下断电，然后运行，单步调试来到 `printf()` 函数调用的地方：
+因为程序逻辑需要输入参数，设置好参数后，在主函数处下断点，然后运行，单步调试来到 `printf()` 函数调用的地方：
 
 ![]({{ site.url }}/public/img/article/2015-08-07-use-gdb-to-study-got-and-plt/got-3.png)
 
