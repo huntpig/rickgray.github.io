@@ -21,7 +21,7 @@ template = Template("Your input: {}".format(sys.argv[1] if len(sys.argv) > 1 els
 print template.render()
 ```
 
-为了方便演示，这里直接将命令参数输入拼接为模板内容的一部分并进行渲染输出，这里我们直接输入 `{{ 'abcd' }}` 使模板直接渲染字符串变量：
+为了方便演示，这里直接将命令参数输入拼接为模板内容的一部分并进行渲染输出，这里我们直接输入 `{% raw %}{{ 'abcd' }}{% endraw %}` 使模板直接渲染字符串变量：
 
 ![]({{ site.url }}/public/img/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/1.png)
 
@@ -43,7 +43,7 @@ template.globals['os'] = os
 print template.render()
 ```
 
-执行代码，并传入参数 `{{ os.popen('echo Hello RCE').read() }}`，因为在模板环境中已经注册了 `os` 变量为 Python `os` 模块，所以可以直接调用模块函数来执行系统命令，这里执行额系统命令为 `echo Hello Command Exection`：
+执行代码，并传入参数 `{% raw %}{{ os.popen('echo Hello RCE').read() }}{% endraw %}`，因为在模板环境中已经注册了 `os` 变量为 Python `os` 模块，所以可以直接调用模块函数来执行系统命令，这里执行额系统命令为 `echo Hello Command Exection`：
 
 ![]({{ site.url }}/public/img/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/3.png)
 
