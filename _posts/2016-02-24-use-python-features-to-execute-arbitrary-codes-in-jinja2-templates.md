@@ -23,11 +23,11 @@ print template.render()
 
 为了方便演示，这里直接将命令参数输入拼接为模板内容的一部分并进行渲染输出，这里我们直接输入 `{{ 'abcd' }}` 使模板直接渲染字符串变量：
 
-![]({{ site.url }}/public/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/1.png)
+![]({{ site.url }}/public/img/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/1.png)
 
 当然上面说了可以在模板中直接调用变量实例的函数，如字符串变量中的 `upper()` 函数将其字符串转换为全大写形式：
 
-![]({{ site.url }}/public/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/2.png)
+![]({{ site.url }}/public/img/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/2.png)
 
 那么如何在 Jinja2 的模板中执行 Python 代码呢？如官方的说法是需要在模板环境中注册函数才能在模板中进行调用，例如想要在模板中直接调用内置模块 `os`，即需要在模板环境中对其注册，示例代码二如下：
 
@@ -45,11 +45,11 @@ print template.render()
 
 执行代码，并传入参数 `{{ os.popen('echo Hello RCE').read() }}`，因为在模板环境中已经注册了 `os` 变量为 Python `os` 模块，所以可以直接调用模块函数来执行系统命令，这里执行额系统命令为 `echo Hello Command Exection`：
 
-![]({{ site.url }}/public/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/3.png)
+![]({{ site.url }}/public/img/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/3.png)
 
 如果使用示例代码一来执行，会得到 `os` 未定义的异常错误：
 
-![]({{ site.url }}/public/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/4.png)
+![]({{ site.url }}/public/img/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/4.png)
 
 ### 二、利用 Python 特性直接执行任意代码
 
@@ -99,7 +99,7 @@ while 1:
 [c for c in [].__class__.__base__.__subclasses__() if c.__name__ == 'catch_warnings'][0].__init__.func_globals['linecache'].__dict__['o'+'s'].__dict__['sy'+'stem']('echo Hello SandBox')
 ```
 
-![]({{ site.url }}/public/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/5.png)
+![]({{ site.url }}/public/img/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/5.png)
 
 当然通过这种方式不仅仅能够通过 `os` 模块来执行系统命令，还能进行文件读写等操作，具体的代码请自行构造。
 
@@ -113,7 +113,7 @@ while 1:
 
 使用该 Payload 作为示例代码二的执行参数，最终会执行系统命令 `id`：
 
-![]({{ site.url }}/public/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/6.png)
+![]({{ site.url }}/public/img/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/6.png)
 
 当然除了遍历找到 `os` 模块外，还能直接找回 `eval` 函数并进行调用，这样就能够调用复杂的 Python 代码：
 
@@ -139,7 +139,7 @@ while 1:
 
 使用该 Payload 作为示例代码二的执行参数（注意引号转义），成功执行会使用 `eval()` 函数动态载入 `os` 模块并执行命令：
 
-![]({{ site.url }}/public/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/7.png)
+![]({{ site.url }}/public/img/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/7.png)
 
 ### 三、利用途径和防御方法
 
@@ -147,7 +147,7 @@ SSTI（服务端模板注入）。通过 SSTI 控制 Web 应用渲染模板（�
 
 在 Jinja2 模板中防止利用 Python 特性执行任意代码，可以使用 Jinja2 自带的沙盒环境 `jinja2.sandbox.SandboxedEnvironment`，Jinja2 默认沙盒环境在解析模板内容时会检查所操作的变量属性，对于未注册的变量属性访问都会抛出错误。
 
-![]({{ site.url }}/public/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/8.png)
+![]({{ site.url }}/public/img/article/2016-02-24-use-python-features-to-execute-arbitrary-codes-in-jinja2-templates/8.png)
 
 ### 参考
 
