@@ -25,11 +25,8 @@ friends:
     - name: "Caiji"
       url: "http://c-chicken.cc"
       desc: "小学弟弟，超级无数 (๑•̀ㅂ•́)و✧"
-    - name: "MarginTop"
-      url: "http://ujj.me"
-      desc: "MarginTop大家都这么叫的 >>_|"
     - name: "君莫笑"
-      url: "http://jmx-orz.cc"
+      url: "http://www.cnblogs.com/junmoxiao"
       desc: "常用密码是laogong :D"
     - name: "ZeroLing"
       url: "http://zeroling.com"
@@ -40,6 +37,7 @@ author:
     url: "http://weibo.com/rickgray"
     email: "rickchen.vip@gmail.com"
     weibo: "http://weibo.com/rickgray"
+    twitter: "http://twitter.com/R1ckGr3y"
     github: "https://github.com/RickGray"
 
 disqus:
