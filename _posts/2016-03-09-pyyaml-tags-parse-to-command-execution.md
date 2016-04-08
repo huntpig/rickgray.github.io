@@ -145,7 +145,7 @@ sponse: !!python/object:__main__.Person {age: 25, children: null, name: Jane Smi
 
 然而看到 `__builtin__` 这个关键字就应该敏感起来，通过查看 PyYAML 源码可以得到其针对 Python 语言特有的标签解析的处理函数对应列表（`$PYTHON_HOME/lib/site-packages/yaml/constructor.py`612 - 674 行）：
 
-```python
+```
 !!python/none             =>  Constructor.construct_yaml_nul
 !!python/bool             =>  Constructor.construct_yaml_boo
 !!python/str              =>  Constructor.construct_python_str
