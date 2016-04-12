@@ -194,8 +194,11 @@ Y3Bvc2l4CnN5c3RlbQpwMAooUyd0b3VjaCAvdG1wL2V2aWxUYXNrJwpwMQp0cDIKUnAzCi4=
                 'reply_to': 'b6c304bb-45e5-3b27-95dc-29335cbce9f1'
                }
 }
+```
 
 转换为字符串：
+
+```
 "{\"body\": \"Y3Bvc2l4CnN5c3RlbQpwMAooUyd0b3VjaCAvdG1wL2V2aWxUYXNrJwpwMQp0cDIKUnAzCi4=\", \"headers\": {}, \"content-type\": \"application/x-python-serialize\", \"properties\": {\"body_encoding\": \"base64\", \"delivery_info\": {\"priority\": 0, \"routing_key\": \"celery\", \"exchange\": \"celery\"}, \"delivery_mode\": 2, \"correlation_id\": \"73b9cafe-1c8d-4ff6-b7a8-49b60bff14ff\", \"reply_to\": \"b6c304bb-45e5-3b27-95dc-29335cbce9f1\", \"delivery_tag\": \"0ad4f731-e5d3-427c-a6d6-d0fe48ff2b09\"}, \"content-encoding\": \"binary\"}"
 ```
 
