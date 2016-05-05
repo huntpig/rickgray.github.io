@@ -4,6 +4,7 @@
 # permalink:           pretty
 # relative_permalinks: true
 
+
 # Setup
 
 title:          "rickgray.me"
@@ -20,7 +21,7 @@ friends:
       url: "http://purpleroc.com"
       desc: "帅气学长"
     - name: "RicterZ"
-      url: "http://ricter.me"
+      url: "http://ricterz.me"
       desc: "萌学弟，最爱萝莉胖次"
     - name: "Caiji"
       url: "http://c-chicken.cc"
