@@ -4,6 +4,9 @@
 # permalink:           pretty
 # relative_permalinks: true
 
+# permalink:  /:title
+
+# gems: [jekyll-paginate]
 
 
 # Setup
@@ -28,7 +31,7 @@ friends:
       url: "http://c-chicken.cc"
       desc: "小学弟弟，超级无数 (๑•̀ㅂ•́)و✧"
     - name: "君莫笑"
-      url: "http://www.cnblogs.com/junmoxiao"
+      url: "http://www.cnblogs.com/junmoxiao/"
       desc: "常用密码是laogong :D"
     - name: "ZeroLing"
       url: "http://zeroling.com"
