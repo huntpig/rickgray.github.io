@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "漏洞检测的那些事儿"
+title: "漏洞检测的那些事儿 - 从理论到实战"
 tags: [web, security]
 ---
 
