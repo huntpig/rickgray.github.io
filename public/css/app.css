@@ -1,5 +1,11 @@
 /* Write your styles */
 
+body {
+  /* font-family: 'Lato', sans-serif; */
+  font-family: "Menlo", sans-serif;
+  background-image: url("/public/img/bg.jpg");
+}
+
 table {
   padding: 0; }
   table tr {
