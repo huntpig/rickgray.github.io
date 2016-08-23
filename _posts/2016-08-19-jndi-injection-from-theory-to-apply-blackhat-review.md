@@ -12,7 +12,7 @@ BlackHat 2016 (USA) 刚结束不久，作为 Web🐶 的我立马去过了一遍
 
 ### 0x00 - JNDI 是什么？
 
-JNDI - Java Naming and Directory Interface 名为 Java命名和目录接口，具体的概念还是比较复杂难懂，具体结构设计细节可以不用了解，简单来说就是 JNDI 提供了一组通用的接口可供饮用很方便地去访问不同的后端服务，例如 LDAP、RMI、CORBA 等。如下图：
+JNDI - Java Naming and Directory Interface 名为 Java命名和目录接口，具体的概念还是比较复杂难懂，具体结构设计细节可以不用了解，简单来说就是 JNDI 提供了一组通用的接口可供应用很方便地去访问不同的后端服务，例如 LDAP、RMI、CORBA 等。如下图：
 
 ![]({{ site.url }}/public/img/article/2016-08-19-jndi-injection-from-theory-to-apply-blackhat-review/1.png)
 
