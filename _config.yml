@@ -4,9 +4,8 @@
 # permalink:           pretty
 # relative_permalinks: true
 
-# permalink:  /:title
 
-# gems: [jekyll-paginate]
+gems: [jekyll-paginate]
 
 
 # Setup
@@ -39,6 +38,9 @@ friends:
     - name: "Dik1s"
       url: "http://z-onion.cc"
       desc: "喜欢带节奏别人的学弟"
+    - name: "倩倩"
+      url: "http://linqian.win"
+      desc: "会敲代码的萌妹子"
 
 author:
     name: "RickGray"
