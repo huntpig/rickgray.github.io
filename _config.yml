@@ -41,6 +41,9 @@ friends:
     - name: "倩倩"
       url: "http://linqian.win"
       desc: "会敲代码的萌妹子"
+    - name: "JayChou"
+      url: "http://www.joychou.org"
+      desc: "儿时偶像 JC 老师"
 
 author:
     name: "RickGray"
