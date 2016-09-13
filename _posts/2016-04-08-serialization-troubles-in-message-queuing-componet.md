@@ -37,7 +37,7 @@ def add(x, y):
 
 然后起一个 Python 交互式终端下发任务并获取执行结果：
 
-```
+```python
 (env)➜  ipython --no-banner
 
 In [1]: from demo import add
@@ -97,7 +97,7 @@ def add(x, y):
 
 为了方便分析，把上面的数据整理一下：
 
-```
+```json
 {
  'body': 'gAJ9cQEoVQdleHBpcmVzcQJOVQN1dGNxA4hVBGFyZ3NxBEsBSxaGcQVVBWNob3JkcQZOVQljYWxsYmFja3NxB05VCGVycmJhY2tzcQhOVQd0YXNrc2V0cQlOVQJpZHEKVSQ3M2I5Y2FmZS0xYzhkLTRmZjYtYjdhOC00OWI2MGJmZjE0ZmZxC1UHcmV0cmllc3EMSwBVBHRhc2txDVUIZGVtby5hZGRxDlUJdGltZWxpbWl0cQ9OToZVA2V0YXEQTlUGa3dhcmdzcRF9cRJ1Lg==',
  'content-encoding': 'binary',
@@ -175,7 +175,7 @@ Y3Bvc2l4CnN5c3RlbQpwMAooUyd0b3VjaCAvdG1wL2V2aWxUYXNrJwpwMQp0cDIKUnAzCi4=
 
 将其替换原来的 `body` 值得到：
 
-```
+```json
 {
  'body': 'Y3Bvc2l4CnN5c3RlbQpwMAooUyd0b3VjaCAvdG1wL2V2aWxUYXNrJwpwMQp0cDIKUnAzCi4=',
  'content-encoding': 'binary',
