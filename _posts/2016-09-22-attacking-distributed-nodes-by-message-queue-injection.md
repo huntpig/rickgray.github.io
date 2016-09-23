@@ -128,7 +128,7 @@ Y3Bvc2l4CnN5c3RlbQpwMAooUyd3aG9hbWknCnAxCnRwMgpScDMKLg==
 
 数据都是以 Python `pickle` 序列化数据结构进行整合的，具体底层协议实现可参考官方文档。
 
-对上面的序列化数据使用 `unserializer.py` 进行反序列化操作时，会触发类重构操作，从何执行 `os.system('whoami')`：
+对上面的序列化数据使用 `unserializer.py` 进行反序列化操作时，会触发类重构操作，从而执行 `os.system('whoami')`：
 
 ![]({{ site.url }}/public/img/article/2016-09-22-attacking-distributed-nodes-by-message-queue-injection/4.png)
 
